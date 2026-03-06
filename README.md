@@ -1,92 +1,98 @@
 # platform-agent-skills
 
+语言无关的 SDD（Spec-Driven Development）技能包，提供 6 条 `/sdd:*` Claude Code 自定义指令，适用于任意技术栈的项目。
 
+## 快速开始
 
-## Getting started
+### Step 1：全局安装（一次，所有项目生效）
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://git.bilibili.co/efficiency-ai/platform-agent-skills.git
-git branch -M main
-git push -uf origin main
+```bash
+git clone git@git.bilibili.co:efficiency-ai/platform-agent-skills.git
+cd platform-agent-skills
+./install.sh
 ```
 
-## Integrate with your tools
+安装后，在任意项目的 Claude Code 中输入 `/sdd:` 即可看到全部指令。
 
-- [ ] [Set up project integrations](https://git.bilibili.co/efficiency-ai/platform-agent-skills/-/settings/integrations)
+### Step 2：项目初始化（在目标项目目录执行）
 
-## Collaborate with your team
+```bash
+cd my-project
+sdd-init
+```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### Step 3：填写项目配置
 
-## Test and Deploy
+编辑 `CLAUDE.md` 中的 `## SDD Configuration` 段，填入项目的测试命令、Lint 命令等。
 
-Use the built-in continuous integration in GitLab.
+### Step 4：开始 SDD 流程
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+```
+/sdd:plan .specify/specs/001-my-feature
+/sdd:tasks .specify/specs/001-my-feature
+/sdd:implement .specify/specs/001-my-feature
+/sdd:review .specify/specs/001-my-feature
+/sdd:status .specify/specs/001-my-feature
+```
 
-***
+---
 
-# Editing this README
+## 指令列表
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### /sdd:* 指令（本仓库提供）
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+负责**技术实现阶段**：从 Spec 生成方案、拆解任务、TDD 实现、审查、进度汇报。
 
-## Name
-Choose a self-explaining name for your project.
+| 指令 | 角色 | 职责 |
+|------|------|------|
+| `/sdd:plan <spec-dir>` | 猫头鹰（Architect） | 从 spec.md 生成技术方案 |
+| `/sdd:tasks <spec-dir>` | 啄木鸟（TaskBreaker） | 将方案拆解为有序任务清单 |
+| `/sdd:implement <spec-dir>` | 海狸（Dev） | TDD 循环实现所有任务 |
+| `/sdd:review <spec-dir>` | 哈士奇（Review） | 代码质量与 Spec 一致性审查 |
+| `/sdd:status <spec-dir>` | 鹦鹉（Status） | 汇报全流程进度 |
+| `/sdd:parallel <stories>` | 章鱼（Orchestrator） | 为多 Story 搭建并行 worktree |
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+### spec-kit 原生指令（需单独安装 specify-cli）
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+负责**需求阶段**：需求 Spec 的生成、完善与审核。
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+| 指令 | 职责 |
+|------|------|
+| `/speckit.spec` | 从需求描述生成结构化 spec.md |
+| `/speckit.review` | 审核 spec.md 的完整性与一致性 |
+| `/speckit.constitution` | 基于项目结构和规范生成/更新宪法 |
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+> 完整的 spec-kit 指令文档见 specify-cli 官方文档。
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+---
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+## 目录结构
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+```
+platform-agent-skills/
+├── README.md
+├── install.sh                         # 全局安装（一次性）
+├── init.sh                            # 项目初始化（sdd-init，每项目执行一次）
+├── skills/
+│   └── sdd/
+│       ├── README.md
+│       ├── commands/                  # 6 条 Claude Code 自定义指令
+│       ├── scripts/                   # 辅助脚本
+│       └── spec-kit-templates/        # spec-kit 模板
+└── docs/
+    ├── QUICKSTART.md
+    ├── CLAUDE-md-template.md
+    ├── standard/                      # 项目规范文档（接口/DB/代码规范）
+    └── patterns/
+```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+---
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+## 文档
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- [快速入门](docs/QUICKSTART.md)
+- [SDD 技能包说明](skills/sdd/README.md)
+- [CLAUDE.md 模板](docs/CLAUDE-md-template.md)
+- [模式：API 功能开发](docs/patterns/pattern-a-api.md)
+- [模式：轻量功能](docs/patterns/pattern-a-lite.md)
+- [模式：重构](docs/patterns/pattern-c-refactoring.md)

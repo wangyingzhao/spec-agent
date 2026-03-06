@@ -87,15 +87,39 @@ sdd-init
 
 ---
 
+## 指令分工
+
+SDD 工作流由两套指令共同覆盖，各司其职：
+
+| 阶段 | 指令来源 | 指令 | 职责 |
+|------|---------|------|------|
+| 需求阶段 | spec-kit 原生 | `/speckit.spec` | 从需求描述生成结构化 spec.md |
+| 需求阶段 | spec-kit 原生 | `/speckit.review` | 审核 spec.md 的完整性与一致性 |
+| 需求阶段 | spec-kit 原生 | `/speckit.constitution` | 生成/更新项目宪法 |
+| 实现阶段 | 本仓库 `/sdd:*` | `/sdd:plan` | 从 spec.md 生成技术方案 |
+| 实现阶段 | 本仓库 `/sdd:*` | `/sdd:tasks` | 拆解任务清单 |
+| 实现阶段 | 本仓库 `/sdd:*` | `/sdd:implement` | TDD 实现 |
+| 实现阶段 | 本仓库 `/sdd:*` | `/sdd:review` | 代码审查 |
+| 实现阶段 | 本仓库 `/sdd:*` | `/sdd:status` | 进度汇报 |
+
+> **需求 Spec 的生成和审核，使用 spec-kit 原生指令（`/speckit.*`）；
+> 技术实现阶段，使用本仓库的 `/sdd:*` 指令。**
+
+---
+
 ## 使用流程
 
 ### 写 Spec
 
-在 `.specify/specs/` 下创建 Feature 目录：
+在 `.specify/specs/` 下创建 Feature 目录，然后用 spec-kit 生成和审核：
 
 ```bash
 mkdir .specify/specs/001-my-feature
-# 编写 spec.md（用户故事 + FR + AC）
+```
+
+```
+/speckit.spec .specify/specs/001-my-feature     # 生成 spec.md
+/speckit.review .specify/specs/001-my-feature   # 审核 spec.md
 ```
 
 ### 运行 SDD 流程
