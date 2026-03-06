@@ -165,7 +165,7 @@ A: `sdd-init` 会打印安装指引并跳过索引，`.mcp.json` 仍会写入。
 A: 不会。脚本检测到已有文件时，会用 Python 合并 `serena` 配置到已有 `mcpServers` 中，不影响其他 MCP 服务。
 
 **Q: 规范更新了如何同步？**
-A: 修改 `docs/standard/` 后重新执行 `init.sh`，规范文件会刷新到 `.specify/memory/standards/`。然后在 Claude Code 中重跑 `/speckit.constitution` 使宪法生效。
+A: 修改 `docs/standard/` 后重新执行 `sdd-init`，规范文件会刷新到 `.specify/memory/standards/`。然后在 Claude Code 中重跑 `/speckit.constitution` 使宪法生效。
 
 **Q: `constitution.md` 和 `standards/` 有什么关系？**
 A: `standards/` 是从本仓库同步的原始规范文件（接口规范、DB 规范等）。`constitution.md` 是 `/speckit.constitution` 基于这些规范 + 项目代码结构生成的**项目级约束宪法**，是 SDD 指令的实际参考依据。

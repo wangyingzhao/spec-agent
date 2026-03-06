@@ -137,7 +137,7 @@ echo ""
 if command -v uvx &>/dev/null; then
     echo "  [✓] serena    将通过 uvx 在 sdd-init 中按需拉取（无需单独安装）"
 else
-    echo "  [-] serena    uv 就绪后可用，init.sh 执行时自动拉取"
+    echo "  [-] serena    uv 就绪后可用，sdd-init 执行时自动拉取"
 fi
 
 echo ""
