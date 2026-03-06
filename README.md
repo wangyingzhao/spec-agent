@@ -58,8 +58,8 @@ sdd-init
 
 | 指令 | 职责 |
 |------|------|
-| `/speckit.spec` | 从需求描述生成结构化 spec.md |
-| `/speckit.review` | 审核 spec.md 的完整性与一致性 |
+| `/speckit.specify` | 从需求描述生成结构化 spec.md |
+| `/speckit.clarify` | 需求确认与澄清 |
 | `/speckit.constitution` | 基于项目结构和规范生成/更新宪法 |
 
 > 完整的 spec-kit 指令文档见 specify-cli 官方文档。

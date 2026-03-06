@@ -93,8 +93,8 @@ SDD 工作流由两套指令共同覆盖，各司其职：
 
 | 阶段 | 指令来源 | 指令 | 职责 |
 |------|---------|------|------|
-| 需求阶段 | spec-kit 原生 | `/speckit.spec` | 从需求描述生成结构化 spec.md |
-| 需求阶段 | spec-kit 原生 | `/speckit.review` | 审核 spec.md 的完整性与一致性 |
+| 需求阶段 | spec-kit 原生 | `/speckit.specify` | 从需求描述生成结构化 spec.md |
+| 需求阶段 | spec-kit 原生 | `/speckit.clarify` | 需求确认与澄清 |
 | 需求阶段 | spec-kit 原生 | `/speckit.constitution` | 生成/更新项目宪法 |
 | 实现阶段 | 本仓库 `/sdd:*` | `/sdd:plan` | 从 spec.md 生成技术方案 |
 | 实现阶段 | 本仓库 `/sdd:*` | `/sdd:tasks` | 拆解任务清单 |
@@ -118,8 +118,8 @@ mkdir .specify/specs/001-my-feature
 ```
 
 ```
-/speckit.spec .specify/specs/001-my-feature     # 生成 spec.md
-/speckit.review .specify/specs/001-my-feature   # 审核 spec.md
+/speckit.specify .specify/specs/001-my-feature   # 生成 spec.md
+/speckit.clarify .specify/specs/001-my-feature  # 需求确认与澄清
 ```
 
 ### 运行 SDD 流程
