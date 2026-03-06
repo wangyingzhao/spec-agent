@@ -95,6 +95,22 @@ echo "  platform-agent-skills: 项目初始化"
 echo "  目标项目: $PROJECT_DIR"
 echo "══════════════════════════════════════"
 
+# ─────────────────────────────────────────
+# 前置检查：Claude Code /init
+# ─────────────────────────────────────────
+if [ ! -f "$PROJECT_DIR/CLAUDE.md" ] && [ ! -d "$PROJECT_DIR/.claude" ]; then
+    echo ""
+    echo "  ⚠  未检测到 CLAUDE.md 或 .claude/ 目录"
+    echo "     建议先在 Claude Code 中执行 /init，让 AI 分析项目结构并生成项目描述。"
+    echo "     sdd-init 将在此基础上追加 SDD 配置，两者互补。"
+    echo ""
+    if [ -t 0 ]; then
+        printf "  跳过 /init，直接继续？[y/N] "
+        read -r reply
+        [[ "$reply" =~ ^[Yy]$ ]] || { echo "  已取消。请先在 Claude Code 中运行 /init 后再执行 sdd-init。"; exit 0; }
+    fi
+fi
+
 # Step 1: 复制脚本
 echo ""
 echo "[1/7] 复制辅助脚本到 scripts/ ..."
