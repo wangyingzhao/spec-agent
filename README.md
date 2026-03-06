@@ -27,6 +27,17 @@ sdd-init
 
 ### Step 4：开始 SDD 流程
 
+> **前置流程（spec-kit 原生指令）**
+> 在执行 `/sdd:*` 之前，需先用 spec-kit 完成需求阶段：
+> ```
+> /speckit.specify   # 从需求描述生成结构化 spec.md
+> /speckit.clarify   # 需求确认与澄清
+> ```
+> 需求确认后，`.specify/specs/` 下会生成一个 Spec 目录，例如 `.specify/specs/001-my-feature`。
+> - `.specify/specs/` 是 spec-kit 管理所有 Feature Spec 的根目录
+> - `001-my-feature` 是本次功能的编号 + 名称，其中包含 `spec.md`（需求）等文件
+> - `/sdd:*` 指令以该目录为输入，完成从方案到实现的全过程
+
 ```
 /sdd:plan .specify/specs/001-my-feature
 /sdd:tasks .specify/specs/001-my-feature
