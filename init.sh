@@ -5,7 +5,9 @@
 
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_SCRIPT="${BASH_SOURCE[0]}"
+while [ -L "$_SCRIPT" ]; do _SCRIPT="$(readlink "$_SCRIPT")"; done
+SCRIPT_DIR="$(cd "$(dirname "$_SCRIPT")" && pwd)"
 SDD_SKILLS_DIR="$SCRIPT_DIR/skills/sdd"
 PROJECT_DIR="$(pwd)"
 
