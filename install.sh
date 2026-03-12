@@ -28,7 +28,32 @@ echo ""
 echo "已安装以下指令（全局可用）："
 ls "$DEST" | while read f; do echo "  /sdd:${f%.md}"; done
 
-# 2. 同步规范文档
+# 2. 提取并安装 speckit 指令（全局）
+echo ""
+echo "安装 speckit 指令..."
+SPECKIT_DEST="$HOME/.claude/commands"
+if command -v specify &>/dev/null; then
+    SPECKIT_TMP="$(mktemp -d)"
+    if specify init "$SPECKIT_TMP/speckit-extract" --ai claude --no-git --force >/dev/null 2>&1; then
+        SPECKIT_SRC="$SPECKIT_TMP/speckit-extract/.claude/commands"
+        if [ -d "$SPECKIT_SRC" ] && ls "$SPECKIT_SRC"/speckit.*.md >/dev/null 2>&1; then
+            cp "$SPECKIT_SRC"/speckit.*.md "$SPECKIT_DEST/"
+            echo "  Done: speckit 指令已安装到 $SPECKIT_DEST："
+            ls "$SPECKIT_DEST"/speckit.*.md 2>/dev/null | while read f; do
+                echo "  /$(basename "${f%.md}")"
+            done
+        else
+            echo "  Warn: specify init 未生成 speckit 指令文件"
+        fi
+    else
+        echo "  Warn: specify init 执行失败，跳过 speckit 指令安装"
+    fi
+    rm -rf "$SPECKIT_TMP"
+else
+    echo "  Skip: specify 未安装，speckit 指令将在安装 specify 后重新运行 install.sh 时提取"
+fi
+
+# 3. 同步规范文档（原编号 2）
 STANDARDS_SRC="$SCRIPT_DIR/docs/standard"
 if [ -d "$STANDARDS_SRC" ] && [ -n "$(ls "$STANDARDS_SRC"/*.md 2>/dev/null)" ]; then
     echo ""
@@ -40,7 +65,7 @@ if [ -d "$STANDARDS_SRC" ] && [ -n "$(ls "$STANDARDS_SRC"/*.md 2>/dev/null)" ]; 
 fi
 
 # ─────────────────────────────────────────
-# 3. 注册全局命令 sdd-init
+# 4. 注册全局命令 sdd-init
 # ─────────────────────────────────────────
 BIN_DIR="$HOME/.local/bin"
 mkdir -p "$BIN_DIR"
@@ -56,17 +81,36 @@ else
     # 检测 shell 并给出对应配置建议
     SHELL_RC=""
     case "$SHELL" in
-        */zsh)  SHELL_RC="~/.zshrc" ;;
-        */bash) SHELL_RC="~/.bashrc" ;;
-        *)      SHELL_RC="~/.profile" ;;
+        */zsh)  SHELL_RC="$HOME/.zshrc" ;;
+        */bash) SHELL_RC="$HOME/.bashrc" ;;
+        *)      SHELL_RC="$HOME/.profile" ;;
     esac
-    echo "  请将以下内容加入 $SHELL_RC："
-    echo "    export PATH=\"\$HOME/.local/bin:\$PATH\""
-    echo "  然后执行: source $SHELL_RC"
+    PATH_LINE='export PATH="$HOME/.local/bin:$PATH"'
+    if [ -f "$SHELL_RC" ] && grep -qF '.local/bin' "$SHELL_RC"; then
+        echo "  Info: $SHELL_RC 中已包含 .local/bin 相关配置，请确认其生效"
+    elif [ -t 0 ]; then
+        printf "      是否自动将 PATH 配置写入 $SHELL_RC？[Y/n] "
+        read -r reply
+        if [[ ! "$reply" =~ ^[Nn]$ ]]; then
+            echo "" >> "$SHELL_RC"
+            echo "# Added by platform-agent-skills install.sh" >> "$SHELL_RC"
+            echo "$PATH_LINE" >> "$SHELL_RC"
+            export PATH="$BIN_DIR:$PATH"
+            echo "  Done: 已写入 $SHELL_RC 并在当前会话生效"
+        else
+            echo "  请手动将以下内容加入 $SHELL_RC："
+            echo "    $PATH_LINE"
+            echo "  然后执行: source $SHELL_RC"
+        fi
+    else
+        echo "  请将以下内容加入 $SHELL_RC："
+        echo "    $PATH_LINE"
+        echo "  然后执行: source $SHELL_RC"
+    fi
 fi
 
 # ─────────────────────────────────────────
-# 4. 依赖检测与引导安装（可选，失败不中断）
+# 5. 依赖检测与引导安装（可选，失败不中断）
 # ─────────────────────────────────────────
 set +e
 echo ""
@@ -84,19 +128,29 @@ else
         printf "      是否现在安装 specify-cli？[y/N] "
         read -r reply
         if [[ "$reply" =~ ^[Yy]$ ]]; then
-            if command -v npm &>/dev/null; then
-                npm install -g specify-cli
-                command -v specify &>/dev/null \
-                    && echo "  [✓] specify 安装成功：$(specify --version 2>/dev/null || echo 'ok')" \
-                    || echo "  [!] 安装完成，请重启终端后验证"
+            if command -v uv &>/dev/null; then
+                echo "      通过 uv 安装..."
+                uv tool install specify-cli
+            elif command -v pipx &>/dev/null; then
+                echo "      通过 pipx 安装..."
+                pipx install specify-cli
+            elif command -v pip3 &>/dev/null; then
+                echo "      通过 pip3 安装..."
+                pip3 install --user specify-cli
             else
-                echo "  [!] 未检测到 npm，请先安装 Node.js: https://nodejs.org"
+                echo "  [!] 未检测到 uv / pipx / pip3，请先安装其中之一"
+                echo "      推荐: brew install uv && uv tool install specify-cli"
+            fi
+            if command -v specify &>/dev/null; then
+                echo "  [✓] specify 安装成功：$(specify --version 2>/dev/null || echo 'ok')"
+            else
+                echo "  [!] 安装完成，请重启终端后验证"
             fi
         else
-            echo "      跳过。手动安装: npm install -g specify-cli"
+            echo "      跳过。手动安装: uv tool install specify-cli"
         fi
     else
-        echo "      手动安装: npm install -g specify-cli"
+        echo "      手动安装: uv tool install specify-cli"
     fi
 fi
 

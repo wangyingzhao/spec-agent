@@ -5,8 +5,14 @@
 
 set -e
 
+# 解析符号链接，兼容 macOS readlink（无 -f 选项）
 _SCRIPT="${BASH_SOURCE[0]}"
-while [ -L "$_SCRIPT" ]; do _SCRIPT="$(readlink "$_SCRIPT")"; done
+while [ -L "$_SCRIPT" ]; do
+    _LINK_DIR="$(cd "$(dirname "$_SCRIPT")" && pwd)"
+    _SCRIPT="$(readlink "$_SCRIPT")"
+    # 如果 readlink 返回相对路径，则相对于符号链接所在目录解析
+    [[ "$_SCRIPT" != /* ]] && _SCRIPT="$_LINK_DIR/$_SCRIPT"
+done
 SCRIPT_DIR="$(cd "$(dirname "$_SCRIPT")" && pwd)"
 SDD_SKILLS_DIR="$SCRIPT_DIR/skills/sdd"
 PROJECT_DIR="$(pwd)"

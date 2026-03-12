@@ -25,8 +25,10 @@ cd ~/platform-agent-skills
 ```
 
 这会：
-- 将 6 个 `.md` 指令复制到 `~/.claude/commands/sdd/`（全局生效）
+- 将 6 个 `/sdd:*` 指令复制到 `~/.claude/commands/sdd/`（全局生效）
+- 提取 speckit 指令（`/speckit.specify`、`/speckit.clarify` 等）到 `~/.claude/commands/`（全局生效）
 - 将 `docs/standard/` 规范文档同步到 `~/.claude/sdd-standards/`（供宪法初始化参考）
+- 注册 `sdd-init` 全局命令并自动配置 PATH
 - 检测依赖并引导安装：`specify-cli`（项目初始化需要）、`uv`（serena 索引需要）
 
 **验证：**
@@ -181,7 +183,7 @@ A: 两步排查：① 运行 `codex --version` 确认 CLI 已安装（未安装�
 A: 确认已运行 `./install.sh`，并检查 `~/.claude/commands/sdd/` 目录是否存在。
 
 **Q: specify 未安装怎么办？**
-A: `install.sh` 会询问是否自动安装（`npm install -g specify-cli`）。也可手动安装后再执行 `sdd-init`。若实在不想装，`sdd-init` 会退而手动创建 `.specify/` 目录结构。
+A: `install.sh` 会询问是否自动安装（优先使用 `uv tool install specify-cli`，也支持 `pipx` 和 `pip3`）。也可手动安装后再执行 `sdd-init`。若实在不想装，`sdd-init` 会退而手动创建 `.specify/` 目录结构。
 
 **Q: 如何适配非 Python 项目？**
 A: 在 `CLAUDE.md` 的 `## SDD Configuration` 中填写正确的测试命令和 Lint 命令即可，指令本身与语言无关。
