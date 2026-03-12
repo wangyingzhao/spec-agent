@@ -28,32 +28,7 @@ echo ""
 echo "已安装以下指令（全局可用）："
 ls "$DEST" | while read f; do echo "  /sdd:${f%.md}"; done
 
-# 2. 提取并安装 speckit 指令（全局）
-echo ""
-echo "安装 speckit 指令..."
-SPECKIT_DEST="$HOME/.claude/commands"
-if command -v specify &>/dev/null; then
-    SPECKIT_TMP="$(mktemp -d)"
-    if specify init "$SPECKIT_TMP/speckit-extract" --ai claude --no-git --force >/dev/null 2>&1; then
-        SPECKIT_SRC="$SPECKIT_TMP/speckit-extract/.claude/commands"
-        if [ -d "$SPECKIT_SRC" ] && ls "$SPECKIT_SRC"/speckit.*.md >/dev/null 2>&1; then
-            cp "$SPECKIT_SRC"/speckit.*.md "$SPECKIT_DEST/"
-            echo "  Done: speckit 指令已安装到 $SPECKIT_DEST："
-            ls "$SPECKIT_DEST"/speckit.*.md 2>/dev/null | while read f; do
-                echo "  /$(basename "${f%.md}")"
-            done
-        else
-            echo "  Warn: specify init 未生成 speckit 指令文件"
-        fi
-    else
-        echo "  Warn: specify init 执行失败，跳过 speckit 指令安装"
-    fi
-    rm -rf "$SPECKIT_TMP"
-else
-    echo "  Skip: specify 未安装，speckit 指令将在安装 specify 后重新运行 install.sh 时提取"
-fi
-
-# 3. 同步规范文档（原编号 2）
+# 2. 同步规范文档
 STANDARDS_SRC="$SCRIPT_DIR/docs/standard"
 if [ -d "$STANDARDS_SRC" ] && [ -n "$(ls "$STANDARDS_SRC"/*.md 2>/dev/null)" ]; then
     echo ""
@@ -65,7 +40,7 @@ if [ -d "$STANDARDS_SRC" ] && [ -n "$(ls "$STANDARDS_SRC"/*.md 2>/dev/null)" ]; 
 fi
 
 # ─────────────────────────────────────────
-# 4. 注册全局命令 sdd-init
+# 3. 注册全局命令 sdd-init
 # ─────────────────────────────────────────
 BIN_DIR="$HOME/.local/bin"
 mkdir -p "$BIN_DIR"
@@ -110,7 +85,8 @@ else
 fi
 
 # ─────────────────────────────────────────
-# 5. 依赖检测与引导安装（可选，失败不中断）
+# 4. 依赖检测与引导安装（可选，失败不中断）
+#    顺序：uv → specify → serena（后者依赖前者）
 # ─────────────────────────────────────────
 set +e
 echo ""
@@ -118,7 +94,38 @@ echo "────────────────────────�
 echo "  依赖检测"
 echo "──────────────────────────────────────"
 
-# [1] specify CLI（spec-kit，项目初始化时用于 specify init）
+# [1] uv（specify 和 serena 均依赖）
+echo ""
+if command -v uv &>/dev/null; then
+    echo "  [✓] uv        $(uv --version 2>/dev/null | head -1)"
+else
+    echo "  [✗] uv        未安装（specify 和 serena 均依赖 uv）"
+    if [ -t 0 ]; then
+        printf "      是否现在安装 uv？[y/N] "
+        read -r reply
+        if [[ "$reply" =~ ^[Yy]$ ]]; then
+            echo "      安装中..."
+            if command -v brew &>/dev/null; then
+                brew install uv
+            else
+                curl -LsSf https://astral.sh/uv/install.sh | sh
+                # 将 uv 加入当前会话 PATH
+                export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
+            fi
+            if command -v uv &>/dev/null; then
+                echo "  [✓] uv 安装成功：$(uv --version 2>/dev/null | head -1)"
+            else
+                echo "  [!] uv 安装完成，请重启终端后再运行 install.sh"
+            fi
+        else
+            echo "      跳过。手动安装: brew install uv"
+        fi
+    else
+        echo "      手动安装: brew install uv  或  curl -LsSf https://astral.sh/uv/install.sh | sh"
+    fi
+fi
+
+# [2] specify CLI（spec-kit，项目初始化时用于 specify init）
 echo ""
 if command -v specify &>/dev/null; then
     echo "  [✓] specify   $(specify --version 2>/dev/null || echo '已安装')"
@@ -131,14 +138,13 @@ else
             if command -v uv &>/dev/null; then
                 echo "      通过 uv 安装..."
                 uv tool install specify-cli
+                # uv tool install 后刷新 PATH 以便后续步骤能找到 specify
+                export PATH="$HOME/.local/bin:$PATH"
             elif command -v pipx &>/dev/null; then
                 echo "      通过 pipx 安装..."
                 pipx install specify-cli
-            elif command -v pip3 &>/dev/null; then
-                echo "      通过 pip3 安装..."
-                pip3 install --user specify-cli
             else
-                echo "  [!] 未检测到 uv / pipx / pip3，请先安装其中之一"
+                echo "  [!] 未检测到 uv 或 pipx，请先安装 uv"
                 echo "      推荐: brew install uv && uv tool install specify-cli"
             fi
             if command -v specify &>/dev/null; then
@@ -154,44 +160,45 @@ else
     fi
 fi
 
-# [2] uv（serena 依赖）
-echo ""
-if command -v uv &>/dev/null; then
-    echo "  [✓] uv        $(uv --version 2>/dev/null | head -1)"
-else
-    echo "  [✗] uv        未安装（serena 代码索引通过 uvx 运行）"
-    if [ -t 0 ]; then
-        # 交互式终端：询问是否自动安装
-        printf "      是否现在安装 uv？[y/N] "
-        read -r reply
-        if [[ "$reply" =~ ^[Yy]$ ]]; then
-            echo "      安装中..."
-            if command -v brew &>/dev/null; then
-                brew install uv
-            else
-                curl -LsSf https://astral.sh/uv/install.sh | sh
-                # 将 uv 加入当前会话 PATH
-                export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
-            fi
-            if command -v uv &>/dev/null; then
-                echo "  [✓] uv 安装成功：$(uv --version 2>/dev/null | head -1)"
-            else
-                echo "  [!] uv 安装完成，请重启终端后再运行 sdd-init"
-            fi
-        else
-            echo "      跳过。手动安装: brew install uv"
-        fi
-    else
-        echo "      手动安装: brew install uv  或  curl -LsSf https://astral.sh/uv/install.sh | sh"
-    fi
-fi
-
 # [3] serena（通过 uvx 按需拉取）
 echo ""
 if command -v uvx &>/dev/null; then
     echo "  [✓] serena    将通过 uvx 在 sdd-init 中按需拉取（无需单独安装）"
 else
     echo "  [-] serena    uv 就绪后可用，sdd-init 执行时自动拉取"
+fi
+
+# ─────────────────────────────────────────
+# 5. 提取并安装 speckit 指令（全局）
+#    放在依赖安装之后，确保 specify 已可用
+# ─────────────────────────────────────────
+echo ""
+echo "──────────────────────────────────────"
+echo "  安装 speckit 指令"
+echo "──────────────────────────────────────"
+SPECKIT_DEST="$HOME/.claude/commands"
+if command -v specify &>/dev/null; then
+    SPECKIT_TMP="$(mktemp -d)"
+    echo "  提取 speckit 指令中..."
+    if specify init "$SPECKIT_TMP/speckit-extract" --ai claude --no-git --force >/dev/null 2>&1; then
+        SPECKIT_SRC="$SPECKIT_TMP/speckit-extract/.claude/commands"
+        if [ -d "$SPECKIT_SRC" ] && ls "$SPECKIT_SRC"/speckit.*.md >/dev/null 2>&1; then
+            cp "$SPECKIT_SRC"/speckit.*.md "$SPECKIT_DEST/"
+            echo "  Done: speckit 指令已安装到 $SPECKIT_DEST："
+            ls "$SPECKIT_DEST"/speckit.*.md 2>/dev/null | while read f; do
+                echo "    /$(basename "${f%.md}")"
+            done
+        else
+            echo "  Warn: specify init 未生成 speckit 指令文件"
+        fi
+    else
+        echo "  Warn: specify init 执行失败，跳过 speckit 指令安装"
+    fi
+    rm -rf "$SPECKIT_TMP"
+else
+    echo "  Skip: specify 未安装，speckit 指令未提取"
+    echo "  安装 specify 后重新运行 install.sh 即可补装："
+    echo "    uv tool install specify-cli && ./install.sh"
 fi
 
 echo ""
