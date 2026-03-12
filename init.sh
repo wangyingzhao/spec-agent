@@ -5,7 +5,15 @@
 
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 解析符号链接，兼容 macOS readlink（无 -f 选项）
+_SCRIPT="${BASH_SOURCE[0]}"
+while [ -L "$_SCRIPT" ]; do
+    _LINK_DIR="$(cd "$(dirname "$_SCRIPT")" && pwd)"
+    _SCRIPT="$(readlink "$_SCRIPT")"
+    # 如果 readlink 返回相对路径，则相对于符号链接所在目录解析
+    [[ "$_SCRIPT" != /* ]] && _SCRIPT="$_LINK_DIR/$_SCRIPT"
+done
+SCRIPT_DIR="$(cd "$(dirname "$_SCRIPT")" && pwd)"
 SDD_SKILLS_DIR="$SCRIPT_DIR/skills/sdd"
 PROJECT_DIR="$(pwd)"
 
@@ -129,7 +137,7 @@ fi
 
 # Step 1: 复制脚本
 echo ""
-echo "[1/7] 复制辅助脚本到 scripts/ ..."
+echo "[1/8] 复制辅助脚本到 scripts/ ..."
 mkdir -p "$PROJECT_DIR/scripts"
 cp "$SDD_SKILLS_DIR/scripts/sdd-dashboard.sh" "$PROJECT_DIR/scripts/"
 cp "$SDD_SKILLS_DIR/scripts/sdd-parallel.sh"  "$PROJECT_DIR/scripts/"
@@ -141,7 +149,7 @@ echo "  Done: scripts/sdd-{dashboard,parallel,pipeline}.sh"
 
 # Step 2: 初始化 .specify/
 echo ""
-echo "[2/7] 初始化 .specify/ ..."
+echo "[2/8] 初始化 .specify/ ..."
 if [ ! -d "$PROJECT_DIR/.specify" ]; then
     if command -v specify &>/dev/null; then
         specify init . --ai claude 2>/dev/null || true
@@ -158,7 +166,7 @@ fi
 
 # Step 3: 复制 spec-kit 模板
 echo ""
-echo "[3/7] 复制 spec-kit 模板到 .specify/templates/commands/ ..."
+echo "[3/8] 复制 spec-kit 模板到 .specify/templates/commands/ ..."
 mkdir -p "$PROJECT_DIR/.specify/templates/commands"
 cp "$SDD_SKILLS_DIR/spec-kit-templates/plan.md"      "$PROJECT_DIR/.specify/templates/commands/"
 cp "$SDD_SKILLS_DIR/spec-kit-templates/tasks.md"     "$PROJECT_DIR/.specify/templates/commands/"
@@ -167,13 +175,13 @@ echo "  Done: .specify/templates/commands/{plan,tasks,implement}.md"
 
 # Step 4: 创建运行时目录
 echo ""
-echo "[4/7] 创建运行时目录 ..."
+echo "[4/8] 创建运行时目录 ..."
 mkdir -p "$PROJECT_DIR/.sdd/agents" "$PROJECT_DIR/.sdd/handoff"
 echo "  Done: .sdd/agents/ 和 .sdd/handoff/"
 
 # Step 5: 更新 CLAUDE.md
 echo ""
-echo "[5/7] 更新 CLAUDE.md ..."
+echo "[5/8] 更新 CLAUDE.md ..."
 CLAUDE_MD="$PROJECT_DIR/CLAUDE.md"
 SDD_CONFIG_BLOCK="
 ## SDD Configuration
@@ -203,7 +211,7 @@ fi
 
 # Step 6: 同步规范文档 + 种子宪法
 echo ""
-echo "[6/7] 同步规范文档 + 初始化 spec 宪法 ..."
+echo "[6/8] 同步规范文档 + 初始化 spec 宪法 ..."
 STANDARDS_SRC="$SCRIPT_DIR/docs/standard"
 STANDARDS_DEST="$PROJECT_DIR/.specify/memory/standards"
 CONSTITUTION="$PROJECT_DIR/.specify/memory/constitution.md"
@@ -249,8 +257,47 @@ fi
 
 # Step 7: Serena 代码索引
 echo ""
-echo "[7/7] 配置 Serena 代码索引 ..."
+echo "[7/8] 配置 Serena 代码索引 ..."
 _setup_serena "$PROJECT_DIR"
+
+# Step 8: 配置 .claude/settings.json（Codex 工具权限）
+echo ""
+echo "[8/8] 配置 .claude/settings.json（Bash 工具权限）..."
+CLAUDE_SETTINGS="$PROJECT_DIR/.claude/settings.json"
+mkdir -p "$PROJECT_DIR/.claude"
+
+if command -v python3 &>/dev/null; then
+    _PERM_RESULT=$(python3 - "$CLAUDE_SETTINGS" <<'PYEOF'
+import json, sys, os
+f = sys.argv[1]
+cfg = json.load(open(f)) if os.path.exists(f) else {}
+perms = cfg.setdefault("permissions", {}).setdefault("allow", [])
+added = []
+for p in ["Bash(codex *)"]:
+    if p not in perms:
+        perms.append(p)
+        added.append(p)
+with open(f, "w") as out:
+    json.dump(cfg, out, indent=2, ensure_ascii=False)
+    out.write("\n")
+print("added:" + ",".join(added) if added else "skip")
+PYEOF
+)
+    if [[ "$_PERM_RESULT" == skip ]]; then
+        echo "  Skip: Bash(codex *) 权限已存在于 .claude/settings.json"
+    else
+        echo "  Done: 已写入 .claude/settings.json → ${_PERM_RESULT#added:}"
+    fi
+else
+    echo "  Warn: 未检测到 python3，请手动在 .claude/settings.json 添加："
+    echo '        { "permissions": { "allow": ["Bash(codex *)"] } }'
+fi
+
+# 检测 codex CLI 是否安装
+if ! command -v codex &>/dev/null; then
+    echo "  Warn: 未检测到 codex CLI，/sdd:review 的 Codex 交叉审查将降级运行"
+    echo "  安装: npm install -g @openai/codex"
+fi
 
 echo ""
 echo "══════════════════════════════════════"

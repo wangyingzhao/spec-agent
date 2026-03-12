@@ -25,8 +25,10 @@ cd ~/platform-agent-skills
 ```
 
 这会：
-- 将 6 个 `.md` 指令复制到 `~/.claude/commands/sdd/`（全局生效）
+- 将 6 个 `/sdd:*` 指令复制到 `~/.claude/commands/sdd/`（全局生效）
+- 提取 speckit 指令（`/speckit.specify`、`/speckit.clarify` 等）到 `~/.claude/commands/`（全局生效）
 - 将 `docs/standard/` 规范文档同步到 `~/.claude/sdd-standards/`（供宪法初始化参考）
+- 注册 `sdd-init` 全局命令并自动配置 PATH
 - 检测依赖并引导安装：`specify-cli`（项目初始化需要）、`uv`（serena 索引需要）
 
 **验证：**
@@ -49,17 +51,18 @@ cd your-project
 sdd-init
 ```
 
-这会依次完成 7 个步骤：
+这会依次完成 8 个步骤：
 
 | 步骤 | 内容 |
 |------|------|
-| [1/7] | 复制 3 个辅助脚本到 `scripts/` |
-| [2/7] | 初始化 `.specify/` 目录（如未存在，运行 `specify init`） |
-| [3/7] | 复制 spec-kit 模板到 `.specify/templates/commands/` |
-| [4/7] | 创建 `.sdd/agents/` 和 `.sdd/handoff/` 目录 |
-| [5/7] | 在 `CLAUDE.md` 中追加 `## SDD Configuration` 段 |
-| [6/7] | 同步 `docs/standard/` 规范 → `.specify/memory/standards/`，写入种子宪法 |
-| [7/7] | 配置 serena MCP（写 `.mcp.json`），触发初始代码索引 |
+| [1/8] | 复制 3 个辅助脚本到 `scripts/` |
+| [2/8] | 初始化 `.specify/` 目录（如未存在，运行 `specify init`） |
+| [3/8] | 复制 spec-kit 模板到 `.specify/templates/commands/` |
+| [4/8] | 创建 `.sdd/agents/` 和 `.sdd/handoff/` 目录 |
+| [5/8] | 在 `CLAUDE.md` 中追加 `## SDD Configuration` 段 |
+| [6/8] | 同步 `docs/standard/` 规范 → `.specify/memory/standards/`，写入种子宪法 |
+| [7/8] | 配置 serena MCP（写 `.mcp.json`），触发初始代码索引 |
+| [8/8] | 写入 `.claude/settings.json`，授权 `Bash(codex *)` 工具权限；检测 codex CLI |
 
 ### Step 4：填写项目配置
 
@@ -173,11 +176,14 @@ mkdir .specify/specs/001-my-feature
 **Q: Codex 不可用怎么办？**
 A: 海狸会自动降级为自己编写测试，哈士奇会独立完成审查，功能完整。
 
+**Q: `/sdd:review` 提示"Codex 不在线"？**
+A: 两步排查：① 运行 `codex --version` 确认 CLI 已安装（未安装：`npm install -g @openai/codex`）；② 检查项目 `.claude/settings.json` 是否包含 `"Bash(codex *)"` 权限（`sdd-init` 会自动写入；也可手动添加）。
+
 **Q: 指令里找不到 `/sdd:` 前缀？**
 A: 确认已运行 `./install.sh`，并检查 `~/.claude/commands/sdd/` 目录是否存在。
 
 **Q: specify 未安装怎么办？**
-A: `install.sh` 会询问是否自动安装（`npm install -g specify-cli`）。也可手动安装后再执行 `sdd-init`。若实在不想装，`sdd-init` 会退而手动创建 `.specify/` 目录结构。
+A: `install.sh` 会询问是否自动安装（优先使用 `uv tool install specify-cli`，也支持 `pipx` 和 `pip3`）。也可手动安装后再执行 `sdd-init`。若实在不想装，`sdd-init` 会退而手动创建 `.specify/` 目录结构。
 
 **Q: 如何适配非 Python 项目？**
 A: 在 `CLAUDE.md` 的 `## SDD Configuration` 中填写正确的测试命令和 Lint 命令即可，指令本身与语言无关。

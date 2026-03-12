@@ -40,6 +40,14 @@ Spec 目录：$ARGUMENTS
 - `Test framework`：测试框架（如 pytest / jest / go-test）
 - `Source directory`：源码目录（如 `src/` / `lib/`）
 
+**Codex 在线检测（必须通过 Bash 工具实际执行，不得跳过）：**
+```bash
+command -v codex && codex --version
+```
+根据执行结果记录状态：
+- 命令成功（退出码 0）→ 输出 `[海狸] Codex 在线 ✓，后续 Red 阶段和哈士奇审查将强制使用 Codex`，**全程禁止跳过任何 Codex 调用**
+- 命令失败 → 输出 `[海狸] Codex 不在线，降级模式：由海狸直接编写测试`，后续步骤按降级路径执行
+
 初始化 Agent 状态和通信目录：
 ```bash
 mkdir -p .sdd/agents .sdd/handoff
@@ -72,6 +80,8 @@ echo '{"agent":"海狸","status":"working","phase":"Task N — Red","task":"<tas
 ```
 
 #### 4a. Red — Codex 写测试
+
+> **强制规则：Step 1 检测到 Codex 在线时，此步骤不得跳过，不得以任何理由替换为自己编写测试。**
 
 输出：`[海狸] Task N — Red phase: 调用 Codex 编写测试...`
 
@@ -158,6 +168,8 @@ AC-3 → test_ac3_xxx                   COVERED
 ```
 
 ### Step 7: 启动独立哈士奇进程审查
+
+> **强制规则：Step 1 检测到 Codex 在线时，必须通过 Codex CLI 启动独立哈士奇进程，不得以同一会话角色切换替代。**
 
 更新双方状态：
 ```bash
@@ -278,10 +290,11 @@ echo '{"agent":"哈士奇","status":"done","phase":"审查通过"}' > .sdd/agent
 ```
 
 ## 异常处理
-- 如果 Codex 调用失败，降级为由海狸直接编写测试，
-  并告知用户：`[海狸] Codex 不在线，我自己来写测试`
-- 如果哈士奇进程启动失败，降级为海狸内置审查（同一会话角色切换），
-  并告知用户：`[海狸] 哈士奇进程启动失败，降级为内置审查`
+- **Codex 降级条件（严格）**：仅在 Step 1 的 Bash 检测命令实际返回非零退出码时，才允许降级为海狸直接编写测试。若 Step 1 检测结果为在线，则：
+  - 不得主观判断"Codex 可能不可用"而跳过
+  - 若 codex 命令中途失败，必须向用户报告具体错误，不得静默降级
+  - 告知：`[海狸] codex exec 返回错误：<错误内容>，请检查 Codex CLI 状态`
+- **哈士奇降级条件（严格）**：仅在 Step 7 的 codex exec 命令实际执行失败时，才允许降级为海狸内置审查，并告知用户：`[海狸] 哈士奇进程启动失败（<错误原因>），降级为内置审查`
 - 如果某个测试始终无法通过，停下来报告：`[海狸] Task N 遇到障碍，需要你的决策`
 - 如果发现 spec.md 或 plan.md 有矛盾，停下来报告：`[海狸] 发现图纸矛盾，需要猫头鹰确认`
 - 如果 CLAUDE.md 中缺少 ## SDD Configuration，提示用户运行 `init.sh project` 补充配置
