@@ -8,7 +8,7 @@
 ## SDD Configuration
 
 > SDD 技能包配置，供 /sdd:* 指令读取。
-> 安装说明：https://git.bilibili.co/efficiency-ai/platform-agent-skills
+> 安装说明：https://github.com/wangyingzhao/spec-agent
 
 - Test command: `<your test command, e.g. pytest / npm test / go test ./...>`
 - Lint command: `<your lint command, e.g. ruff check src/ / eslint src/ / golangci-lint run>`

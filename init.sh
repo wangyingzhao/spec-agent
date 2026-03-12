@@ -1,7 +1,7 @@
 #!/bin/bash
-# platform-agent-skills init.sh
+# spec-agent init.sh
 # 项目初始化：在目标项目目录执行，完成 SDD 工作流脚手架搭建
-# 用法: /path/to/platform-agent-skills/init.sh
+# 用法: /path/to/spec-agent/init.sh
 
 set -e
 
@@ -99,7 +99,7 @@ _setup_serena() {
 # 主逻辑
 # ─────────────────────────────────────────
 echo "══════════════════════════════════════"
-echo "  platform-agent-skills: 项目初始化"
+echo "  spec-agent: 项目初始化"
 echo "  目标项目: $PROJECT_DIR"
 echo "══════════════════════════════════════"
 
@@ -231,7 +231,7 @@ if [ -d "$STANDARDS_SRC" ] && [ -n "$(ls "$STANDARDS_SRC"/*.md 2>/dev/null)" ]; 
     STANDARDS_BLOCK="
 ## Included Standards
 
-> 以下规范由 platform-agent-skills init.sh 自动同步，作为本项目 Spec 宪法的约束依据。
+> 以下规范由 spec-agent init.sh 自动同步，作为本项目 Spec 宪法的约束依据。
 
 ${STANDARDS_LIST}
 > 在 Claude Code 中运行 \`/speckit.constitution\` 可基于上述规范和当前项目结构重新生成完整宪法。
@@ -240,7 +240,7 @@ ${STANDARDS_LIST}
         {
             echo "# Project Constitution"
             echo ""
-            echo "> 由 platform-agent-skills init.sh 创建的种子宪法。"
+            echo "> 由 spec-agent init.sh 创建的种子宪法。"
             echo "> 请在 Claude Code 中运行 \`/speckit.constitution\` 完成完整初始化。"
             printf "%s" "$STANDARDS_BLOCK"
         } > "$CONSTITUTION"

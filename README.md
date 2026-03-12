@@ -1,4 +1,4 @@
-# platform-agent-skills
+# spec-agent
 
 语言无关的 SDD（Spec-Driven Development）技能包，提供 6 条 `/sdd:*` Claude Code 自定义指令，适用于任意技术栈的项目。
 
@@ -7,8 +7,8 @@
 ### Step 1：全局安装（一次，所有项目生效）
 
 ```bash
-git clone git@git.bilibili.co:efficiency-ai/platform-agent-skills.git
-cd platform-agent-skills
+git clone git@github.com:wangyingzhao/spec-agent.git
+cd spec-agent
 ./install.sh
 ```
 
@@ -80,7 +80,7 @@ sdd-init
 ## 目录结构
 
 ```
-platform-agent-skills/
+spec-agent/
 ├── README.md
 ├── install.sh                         # 全局安装（一次性）
 ├── init.sh                            # 项目初始化（sdd-init，每项目执行一次）

@@ -1,5 +1,5 @@
 #!/bin/bash
-# platform-agent-skills install.sh
+# spec-agent install.sh
 # 全局安装：复制 SDD 指令、同步规范文档、检测并引导安装依赖（specify / uv / serena）
 # 用法: ./install.sh
 
@@ -8,7 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SDD_SKILLS_DIR="$SCRIPT_DIR/skills/sdd"
 
 echo "══════════════════════════════════════"
-echo "  platform-agent-skills: 全局安装"
+echo "  spec-agent: 全局安装"
 echo "══════════════════════════════════════"
 
 # 1. 复制 SDD 指令
@@ -68,7 +68,7 @@ else
         read -r reply
         if [[ ! "$reply" =~ ^[Nn]$ ]]; then
             echo "" >> "$SHELL_RC"
-            echo "# Added by platform-agent-skills install.sh" >> "$SHELL_RC"
+            echo "# Added by spec-agent install.sh" >> "$SHELL_RC"
             echo "$PATH_LINE" >> "$SHELL_RC"
             export PATH="$BIN_DIR:$PATH"
             echo "  Done: 已写入 $SHELL_RC 并在当前会话生效"

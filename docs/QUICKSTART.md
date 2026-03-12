@@ -14,13 +14,13 @@
 ### Step 1：克隆技能包
 
 ```bash
-git clone git@git.bilibili.co:efficiency-ai/platform-agent-skills.git ~/platform-agent-skills
+git clone git@github.com:wangyingzhao/spec-agent.git ~/spec-agent
 ```
 
 ### Step 2：全局安装 SDD 指令
 
 ```bash
-cd ~/platform-agent-skills
+cd ~/spec-agent
 ./install.sh
 ```
 
