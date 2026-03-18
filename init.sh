@@ -65,6 +65,69 @@ MCPEOF
     fi
 }
 
+# ─────────────────────────────────────────
+# TAPD MCP helper functions
+# ─────────────────────────────────────────
+_write_tapd_mcp_json() {
+    local mcp_json="$1"
+
+    if [ -f "$mcp_json" ]; then
+        if grep -q '"mcp-server-tapd"' "$mcp_json"; then
+            echo "  Skip: .mcp.json 中已有 mcp-server-tapd 配置"
+            return
+        fi
+        if command -v python3 &>/dev/null; then
+            python3 - "$mcp_json" <<'PYEOF'
+import json, sys
+mcp_file = sys.argv[1]
+with open(mcp_file) as f:
+    cfg = json.load(f)
+cfg.setdefault("mcpServers", {})
+cfg["mcpServers"]["mcp-server-tapd"] = {
+    "command": "uvx",
+    "args": [
+        "mcp-server-tapd",
+        "--api-user=tapd-mcp-for-ee",
+        "--api-password=$apr1$0jXDMe9BSaU=$nMxPgbbnnFzDMUl8fcinig==",
+        "--api-base-url=https://tapd-api.bilibili.co/tapd",
+        "--tapd-base-url=https://www.tapd.cn"
+    ]
+}
+with open(mcp_file, "w") as f:
+    json.dump(cfg, f, indent=2, ensure_ascii=False)
+    f.write("\n")
+PYEOF
+            echo "  Done: mcp-server-tapd 已合并到已有 .mcp.json"
+        else
+            echo "  Warn: 已有 .mcp.json，请手动添加 mcp-server-tapd 配置（见 docs/QUICKSTART.md）"
+        fi
+    else
+        cat > "$mcp_json" <<'MCPEOF'
+{
+  "mcpServers": {
+    "mcp-server-tapd": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-tapd",
+        "--api-user=tapd-mcp-for-ee",
+        "--api-password=$apr1$0jXDMe9BSaU=$nMxPgbbnnFzDMUl8fcinig==",
+        "--api-base-url=https://tapd-api.bilibili.co/tapd",
+        "--tapd-base-url=https://www.tapd.cn"
+      ]
+    }
+  }
+}
+MCPEOF
+        echo "  Done: 创建 .mcp.json（mcp-server-tapd 配置）"
+    fi
+}
+
+_setup_tapd() {
+    local project_dir="$1"
+    local mcp_json="$project_dir/.mcp.json"
+    _write_tapd_mcp_json "$mcp_json"
+}
+
 _setup_serena() {
     local project_dir="$1"
     local mcp_json="$project_dir/.mcp.json"
@@ -257,12 +320,17 @@ fi
 
 # Step 7: Serena 代码索引
 echo ""
-echo "[7/8] 配置 Serena 代码索引 ..."
+echo "[7/9] 配置 Serena 代码索引 ..."
 _setup_serena "$PROJECT_DIR"
 
-# Step 8: 配置 .claude/settings.json（Codex 工具权限）
+# Step 8: TAPD MCP
 echo ""
-echo "[8/8] 配置 .claude/settings.json（Bash 工具权限）..."
+echo "[8/9] 配置 TAPD MCP ..."
+_setup_tapd "$PROJECT_DIR"
+
+# Step 9: 配置 .claude/settings.json（Codex 工具权限）
+echo ""
+echo "[9/9] 配置 .claude/settings.json（Bash 工具权限）..."
 CLAUDE_SETTINGS="$PROJECT_DIR/.claude/settings.json"
 mkdir -p "$PROJECT_DIR/.claude"
 
