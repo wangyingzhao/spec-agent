@@ -53,6 +53,13 @@ Spec 目录：$ARGUMENTS
 如果 `.sdd/handoff/review-result.json` 存在，读取上次哈士奇（Codex 跨模型交叉验证）的完整审查结果。
 如果 `.sdd/handoff/codex-review.json` 存在，也读取独立 review 指令的 Codex 审查结果。
 
+### 7. 耗时统计
+通过 Bash 运行耗时统计脚本：
+```bash
+python3 ~/.local/bin/skills/sdd/scripts/sdd-timing.py "$(pwd)"
+```
+将脚本输出原样纳入最终报告的"耗时统计"区块。如果脚本不存在或执行失败，显示"耗时统计不可用（脚本未安装）"。
+
 ## 输出格式
 
 ```
@@ -89,6 +96,17 @@ Spec 目录：$ARGUMENTS
     2. [宪法违规] src/services/foo.py:42 — 裸 except Exception
 
   (无待修复项时显示: 无问题，哈士奇表示满意)
+
+───────────────────────────────────────────
+  耗时统计 (跨会话汇总, N 个会话)
+    总耗时:  Xh Ym (挂钟) / Xh Ym (活跃)
+    SDD 步骤:
+      猫头鹰·plan:       Xm Ys    共 N 次
+      啄木鸟·tasks:      Xm Ys    共 N 次
+      海狸·implement:    Xh Ym    共 N 次
+      哈士奇·review:     Xm Ys    共 N 次
+    其他交互:             Xm Ys
+    最近活动: YYYY-MM-DD HH:MM
 
 ───────────────────────────────────────────
   总状态:  Not started / In progress / Ready for review / Done

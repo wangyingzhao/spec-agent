@@ -28,6 +28,16 @@ echo ""
 echo "已安装以下指令（全局可用）："
 ls "$DEST" | while read f; do echo "  /sdd:${f%.md}"; done
 
+# 1.5 复制 SDD 脚本
+SCRIPTS_DEST="$HOME/.local/bin/skills/sdd/scripts"
+mkdir -p "$SCRIPTS_DEST"
+
+echo ""
+echo "复制 SDD 脚本到 $SCRIPTS_DEST ..."
+cp "$SDD_SKILLS_DIR/scripts/sdd-timing.py" "$SCRIPTS_DEST/sdd-timing.py"
+chmod +x "$SCRIPTS_DEST/sdd-timing.py"
+echo "  Done: sdd-timing.py"
+
 # 2. 同步规范文档
 STANDARDS_SRC="$SCRIPT_DIR/docs/standard"
 if [ -d "$STANDARDS_SRC" ] && [ -n "$(ls "$STANDARDS_SRC"/*.md 2>/dev/null)" ]; then
