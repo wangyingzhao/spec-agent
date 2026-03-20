@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 这是 **platform-agent-skills** 技能包仓库，本身不是一个应用项目，而是一套供其他项目使用的 Claude Code 自定义指令（skill）集合。核心产物是：
 
 - `skills/sdd/commands/` — 6 条 `/sdd:*` 指令（`.md` 文件）
-- `skills/agileflow/commands/agileflow.md` — `/agileflow` 指令
+- `skills/devops/commands/` — 2 条 `/devops:*` 指令（`deploy.md` / `pipeline.md`）
 - `install.sh` — 全局安装脚本（将指令复制到 `~/.claude/commands/`）
 - `init.sh` — 项目初始化脚本（在目标项目中创建 SDD 工作流脚手架）
 
@@ -18,11 +18,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ./install.sh
 
 # 验证安装结果
-ls ~/.claude/commands/sdd/         # → 6 个 .md 文件
-ls ~/.claude/commands/agileflow.md # → agileflow 指令
+ls ~/.claude/commands/sdd/      # → 6 个 .md 文件
+ls ~/.claude/commands/devops/   # → deploy.md / pipeline.md
 ```
 
-安装后在任意项目的 Claude Code 中输入 `/sdd:` 或 `/agileflow` 即可使用。
+安装后在任意项目的 Claude Code 中输入 `/sdd:` 或 `/devops:` 即可使用。
 
 ## 指令调用规则
 
@@ -31,7 +31,8 @@ Claude Code 的自定义指令寻址规则：
 | 文件路径 | 调用方式 |
 |---------|---------|
 | `~/.claude/commands/sdd/plan.md` | `/sdd:plan <args>` |
-| `~/.claude/commands/agileflow.md` | `/agileflow <args>` |
+| `~/.claude/commands/devops/deploy.md` | `/devops:deploy <args>` |
+| `~/.claude/commands/devops/pipeline.md` | `/devops:pipeline <args>` |
 
 - **子目录下的文件**：`/目录名:文件名 <args>`
 - **根目录下的文件**：`/文件名 <args>`
@@ -55,13 +56,13 @@ Claude Code 的自定义指令寻址规则：
 
 修改 `skills/` 下的 `.md` 文件后，需重新运行 `./install.sh` 使改动生效（脚本做简单的 `cp`，无构建步骤）。
 
-## Agileflow 指令
+## DevOps 指令（信鸽）
 
-`/agileflow` 使用方式二鉴权（client_id + client_secret → Access-Token），凭证从目标项目 `CLAUDE.md` 的 `## Agileflow Configuration` 读取：
+`/devops:deploy` 和 `/devops:pipeline` 对接 Bilibili EP Agileflow 平台，凭证存放于 `~/.claude/agileflow.env`（由 `init.sh` 自动创建，权限 600，不进 git）：
 
-```markdown
-## Agileflow Configuration
+```bash
 AGILEFLOW_CLIENT_ID=97322054661
 AGILEFLOW_CLIENT_SECRET=d8853ef964dc47308c12de10d48b7819
 AGILEFLOW_PERM_CODE=ee_platform
+AGILEFLOW_COOKIE=   # 从浏览器登录后复制，buildAndDeploy 降级鉴权时使用
 ```

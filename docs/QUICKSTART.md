@@ -199,3 +199,84 @@ A: 修改 `docs/standard/` 后重新执行 `sdd-init`，规范文件会刷新到
 
 **Q: `constitution.md` 和 `standards/` 有什么关系？**
 A: `standards/` 是从本仓库同步的原始规范文件（接口规范、DB 规范等）。`constitution.md` 是 `/speckit.constitution` 基于这些规范 + 项目代码结构生成的**项目级约束宪法**，是 SDD 指令的实际参考依据。
+
+---
+
+## DevOps 指令（/devops:*）
+
+`/devops:*` 指令由 **信鸽** 驱动，对接 Bilibili EP Agileflow 平台，负责触发构建发布和查询流水线状态。
+
+### 前提：配置凭证
+
+`./init.sh` 会自动在 `~/.claude/agileflow.env` 中创建凭证文件（权限 600，不进 git），前三项已预填，**只需补填 Cookie**：
+
+```bash
+# ~/.claude/agileflow.env（以下三项已由 init.sh 预填，无需修改）
+AGILEFLOW_CLIENT_ID=97322054661
+AGILEFLOW_CLIENT_SECRET=d8853ef964dc47308c12de10d48b7819
+AGILEFLOW_PERM_CODE=ee_platform
+AGILEFLOW_COOKIE=   # ← 唯一需要手动填写的项
+```
+
+> 在浏览器登录 agileflow.bilibili.co → 打开 DevTools → Network → 复制任意请求的 `Cookie` 请求头值填入。
+
+---
+
+### /devops:deploy — 一键发布
+
+```
+/devops:deploy [appid] [branch] [env] [选项]
+```
+
+**所有参数均可省略**，信鸽会自动推断：
+
+| 参数 | 默认值来源 |
+|------|-----------|
+| `appid` | 当前目录 `env.properties` 中的 `app_id=` 字段 |
+| `branch` | 当前 git 分支（`git branch --show-current`） |
+| `env` | `uat` |
+
+**示例：**
+
+```bash
+/devops:deploy                          # 全默认，从 env.properties 取 appid，当前分支，uat
+/devops:deploy --env prod               # 仅改环境
+/devops:deploy ops.foo.bar              # 手动指定 appid
+/devops:deploy ops.foo.bar main prod    # 完整指定
+/devops:deploy --force                  # 跳过"进行中检查"，强制发布
+```
+
+**发布前自动检查：** 信鸽会先查询是否有正在运行的发布流水线。若存在，**阻止本次发布**并展示进行中的流水线详情；加 `--force` 可跳过检查强制执行。
+
+**env.properties 格式：**
+```properties
+app_id=ops.flow-api.mercury
+```
+若文件中有多个 `app_id=`，信鸽会列出所有候选值让你确认。
+
+---
+
+### /devops:pipeline — 流水线查询
+
+```
+/devops:pipeline <子命令> [参数]
+```
+
+| 子命令 | 说明 | 示例 |
+|--------|------|------|
+| `status <appid>` | 查看最近一条发布流水线状态 | `/devops:pipeline status ops.foo.bar` |
+| `list <appid>` | 列出历史流水线记录 | `/devops:pipeline list ops.foo.bar` |
+| `detail <pipeline_id>` | 查看指定流水线详情 | `/devops:pipeline detail 12345` |
+| `configs <appid>` | 查看流水线配置 | `/devops:pipeline configs ops.foo.bar` |
+| `auth` | 验证凭证是否有效 | `/devops:pipeline auth` |
+| `check` | 检查内网连接 | `/devops:pipeline check` |
+| `help` | 显示帮助 | `/devops:pipeline help` |
+
+---
+
+### 典型发布流程
+
+```
+/devops:deploy                          # 触发发布（全默认）
+/devops:pipeline status ops.foo.bar    # 查看发布进度
+```

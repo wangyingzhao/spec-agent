@@ -320,17 +320,39 @@ fi
 
 # Step 7: Serena 代码索引
 echo ""
-echo "[7/9] 配置 Serena 代码索引 ..."
+echo "[7/10] 配置 Serena 代码索引 ..."
 _setup_serena "$PROJECT_DIR"
 
 # Step 8: TAPD MCP
 echo ""
-echo "[8/9] 配置 TAPD MCP ..."
+echo "[8/10] 配置 TAPD MCP ..."
 _setup_tapd "$PROJECT_DIR"
 
-# Step 9: 配置 .claude/settings.json（Codex 工具权限）
+# Step 9: 写入 Agileflow 凭证到 ~/.claude/agileflow.env
 echo ""
-echo "[9/9] 配置 .claude/settings.json（Bash 工具权限）..."
+echo "[9/9] 配置 Agileflow 凭证 (~/.claude/agileflow.env) ..."
+AGILEFLOW_ENV="$HOME/.claude/agileflow.env"
+if [ ! -f "$AGILEFLOW_ENV" ]; then
+    mkdir -p "$HOME/.claude"
+    cat > "$AGILEFLOW_ENV" <<'ENVEOF'
+# Agileflow Open API 凭证
+# 由 platform-agent-skills init.sh 自动生成，勿提交到 git
+AGILEFLOW_CLIENT_ID=97322054661
+AGILEFLOW_CLIENT_SECRET=d8853ef964dc47308c12de10d48b7819
+AGILEFLOW_PERM_CODE=ee_platform
+# Cookie 鉴权（fast-deploy 使用，Access-Token 不支持时自动降级）
+# 从浏览器登录 agileflow.bilibili.co 后复制 Cookie 填入
+AGILEFLOW_COOKIE=
+ENVEOF
+    chmod 600 "$AGILEFLOW_ENV"
+    echo "  Done: 创建 ~/.claude/agileflow.env（权限 600）"
+else
+    echo "  Skip: ~/.claude/agileflow.env 已存在，不覆盖"
+fi
+
+# Step 10: 配置 .claude/settings.json（Codex 工具权限）
+echo ""
+echo "[10/10] 配置 .claude/settings.json（Bash 工具权限）..."
 CLAUDE_SETTINGS="$PROJECT_DIR/.claude/settings.json"
 mkdir -p "$PROJECT_DIR/.claude"
 

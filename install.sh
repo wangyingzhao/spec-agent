@@ -28,6 +28,18 @@ echo ""
 echo "已安装以下指令（全局可用）："
 ls "$DEST" | while read f; do echo "  /sdd:${f%.md}"; done
 
+# 1.7 复制 DevOps 指令（信鸽）→ /devops:pipeline、/devops:deploy
+DEVOPS_SKILLS_DIR="$SCRIPT_DIR/skills/devops"
+if [ -d "$DEVOPS_SKILLS_DIR/commands" ]; then
+    echo ""
+    echo "复制 DevOps 指令到 ~/.claude/commands/devops/ ..."
+    mkdir -p "$HOME/.claude/commands/devops"
+    cp "$DEVOPS_SKILLS_DIR/commands/pipeline.md" "$HOME/.claude/commands/devops/pipeline.md"
+    cp "$DEVOPS_SKILLS_DIR/commands/deploy.md"   "$HOME/.claude/commands/devops/deploy.md"
+    echo "  /devops:pipeline"
+    echo "  /devops:deploy"
+fi
+
 # 1.5 复制 SDD 脚本
 SCRIPTS_DEST="$HOME/.local/bin/skills/sdd/scripts"
 mkdir -p "$SCRIPTS_DEST"

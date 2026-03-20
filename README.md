@@ -63,6 +63,15 @@ sdd-init
 | `/sdd:status <spec-dir>` | 鹦鹉（Status） | 汇报全流程进度 |
 | `/sdd:parallel <stories>` | 章鱼（Orchestrator） | 为多 Story 搭建并行 worktree |
 
+### /devops:* 指令（本仓库提供）
+
+负责 **CI/CD 流水线与发布**，对接 Bilibili EP Agileflow 平台。
+
+| 指令 | 角色 | 职责 |
+|------|------|------|
+| `/devops:deploy [appid] [branch] [env]` | 信鸽（Deploy） | 一键构建并发布到 caster 平台 |
+| `/devops:pipeline <子命令>` | 信鸽（Pipeline） | 查询流水线状态、配置、历史记录 |
+
 ### spec-kit 原生指令（需单独安装 specify-cli）
 
 负责**需求阶段**：需求 Spec 的生成、完善与审核。
@@ -85,11 +94,13 @@ platform-agent-skills/
 ├── install.sh                         # 全局安装（一次性）
 ├── init.sh                            # 项目初始化（sdd-init，每项目执行一次）
 ├── skills/
-│   └── sdd/
-│       ├── README.md
-│       ├── commands/                  # 6 条 Claude Code 自定义指令
-│       ├── scripts/                   # 辅助脚本
-│       └── spec-kit-templates/        # spec-kit 模板
+│   ├── sdd/
+│   │   ├── README.md
+│   │   ├── commands/                  # 6 条 Claude Code 自定义指令
+│   │   ├── scripts/                   # 辅助脚本
+│   │   └── spec-kit-templates/        # spec-kit 模板
+│   └── devops/
+│       └── commands/                  # 2 条 DevOps 指令（deploy / pipeline）
 └── docs/
     ├── QUICKSTART.md
     ├── CLAUDE-md-template.md
@@ -103,6 +114,7 @@ platform-agent-skills/
 
 - [快速入门](docs/QUICKSTART.md)
 - [SDD 技能包说明](skills/sdd/README.md)
+- [DevOps 技能包说明](skills/devops/README.md)
 - [CLAUDE.md 模板](docs/CLAUDE-md-template.md)
 - [模式：API 功能开发](docs/patterns/pattern-a-api.md)
 - [模式：轻量功能](docs/patterns/pattern-a-lite.md)
