@@ -212,10 +212,10 @@ A: `standards/` 是从本仓库同步的原始规范文件（接口规范、DB �
 
 ```bash
 # ~/.claude/agileflow.env（以下三项已由 init.sh 预填，无需修改）
-AGILEFLOW_CLIENT_ID=97322054661
+AGILEFLOW_CLIENT_ID=97322054661        # /devops:pipeline 使用（Access-Token 鉴权）
 AGILEFLOW_CLIENT_SECRET=d8853ef964dc47308c12de10d48b7819
 AGILEFLOW_PERM_CODE=ee_platform
-AGILEFLOW_COOKIE=   # ← 唯一需要手动填写的项
+AGILEFLOW_COOKIE=                      # /devops:deploy 使用，← 唯一需要手动填写的项
 ```
 
 > 在浏览器登录 agileflow.bilibili.co → 打开 DevTools → Network → 复制任意请求的 `Cookie` 请求头值填入。

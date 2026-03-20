@@ -10,34 +10,18 @@
 
 ## 凭证读取
 
-按优先级读取：
-1. **`~/.claude/agileflow.env`**（由 `./init.sh` 自动创建，不进 git）
-2. **项目 `CLAUDE.md` 的 `## Agileflow Configuration`**（兜底）
-
 ```bash
 [ -f ~/.claude/agileflow.env ] && source ~/.claude/agileflow.env
 ```
 
 凭证字段：
 ```
-AGILEFLOW_CLIENT_ID=xxx
-AGILEFLOW_CLIENT_SECRET=xxx
-AGILEFLOW_PERM_CODE=xxx
-AGILEFLOW_COOKIE=xxx       # fast-deploy 降级时使用
-AGILEFLOW_ACCESS_TOKEN=xxx # 可选缓存，24h 有效
+AGILEFLOW_COOKIE=xxx   # 从浏览器登录 agileflow.bilibili.co 后复制
 ```
 
----
-
-## 鉴权
-
-**查询类**（获取应用详情）：优先 Access-Token，返回 -401 时自动降级用 Cookie。
-
-**发布类**（buildAndDeploy）：同上，优先 Access-Token，失败切 Cookie。
-
-若 Cookie 未配置且降级触发，提示：
+若 `AGILEFLOW_COOKIE` 未配置，停止并提示：
 ```
-⚠️ 该接口需要 Cookie 鉴权，请在 ~/.claude/agileflow.env 中配置：
+⚠️ 请先配置 Cookie：在 ~/.claude/agileflow.env 中填写：
 AGILEFLOW_COOKIE=<浏览器登录 agileflow.bilibili.co 后复制的 Cookie>
 ```
 
@@ -84,12 +68,11 @@ AGILEFLOW_COOKIE=<浏览器登录 agileflow.bilibili.co 后复制的 Cookie>
 
 **推断 appid：**
 ```bash
-# 从当前目录 env.properties 中读取
 grep "^app_id=" env.properties 2>/dev/null | cut -d= -f2
 ```
 - 若文件不存在或无 `app_id=` 字段：要求用户手动传入
 - 若找到 **唯一一个** 值：直接使用，并告知用户
-- 若找到 **多个** 值（文件中有多行 `app_id=`）：列出所有候选值，让用户确认选哪个
+- 若找到 **多个** 值：列出所有候选值，让用户确认选哪个
 
 **推断 branch：**
 ```bash
@@ -102,9 +85,9 @@ git branch --show-current
 - 默认值：`uat`
 - 若 `$ARGUMENTS` 中显式指定则覆盖
 
-**命令行参数优先级高于自动推断**：若用户在 `$ARGUMENTS` 中直接传入 `appid`/`branch`/`env`，以传入值为准，不读取 env.properties / git。
+**命令行参数优先级高于自动推断**：若用户直接传入 `appid`/`branch`/`env`，以传入值为准。
 
-读取凭证（见上方凭证读取规则），获取 Access-Token。
+读取凭证（见上方凭证读取规则），若 Cookie 未配置则停止。
 
 ---
 
@@ -113,7 +96,7 @@ git branch --show-current
 在触发发布前，检查该 appid 是否存在**正在进行中**的发布流水线：
 
 ```bash
-curl -s -H "Access-Token: ${TOKEN}" -H "Perm-Code: ${PERM_CODE}" \
+curl -s -H "Cookie: ${AGILEFLOW_COOKIE}" \
   "https://agileflow.bilibili.co/ep/admin/agileflow/open/pipeline/list?appid=<appid>&event_type=5&status=1&ps=5&pn=1"
 ```
 
@@ -146,13 +129,6 @@ curl -s -H "Access-Token: ${TOKEN}" -H "Perm-Code: ${PERM_CODE}" \
 
 **Sub-Step 1：获取应用详情**
 
-优先用 Access-Token：
-```bash
-curl -s -H "Access-Token: ${TOKEN}" -H "Perm-Code: ${PERM_CODE}" \
-  "https://agileflow.bilibili.co/ep/admin/nyx/app/application/detail?appid=<appid>"
-```
-
-返回 code == -401 时，用 Cookie 重试：
 ```bash
 curl -s -H "Cookie: ${AGILEFLOW_COOKIE}" \
   "https://agileflow.bilibili.co/ep/admin/nyx/app/application/detail?appid=<appid>"
@@ -198,13 +174,13 @@ caster system_args：
 发起请求：
 ```bash
 curl -s -X POST \
-  -H "Access-Token: ${TOKEN}" -H "Perm-Code: ${PERM_CODE}" \
+  -H "Cookie: ${AGILEFLOW_COOKIE}" \
   -H "Content-Type: application/json" \
   -d '{
     "event_type": 5,
     "branch": "<branch>",
     "tag": "",
-    "operator": "<username 从 Cookie 提取，或 AGILEFLOW_CLIENT_ID>",
+    "operator": "<从 Cookie 中提取的用户名，或留空>",
     "system_args": <system_args>,
     "deploy_platform": "caster"
   }' \
@@ -239,9 +215,7 @@ curl -s -X POST \
 |------|----------|
 | curl 执行失败 | 提示检查内网连接 / VPN |
 | code != 0 | 展示 code + message |
-| 凭证未配置 | 提示配置 `~/.claude/agileflow.env` |
-| token 过期 | 自动重新获取 |
-| Access-Token 鉴权失败（-401） | 自动降级用 Cookie 重试 |
-| Cookie 未配置（降级时） | 提示配置 `AGILEFLOW_COOKIE` |
+| Cookie 未配置 | 提示配置 `~/.claude/agileflow.env` 中的 `AGILEFLOW_COOKIE` |
+| Cookie 过期（返回登录页或 -401） | 提示重新从浏览器复制 Cookie |
 | 声明式构建应用 | 提示跳转页面手动操作并停止 |
 | 存在进行中的发布 | 阻止发布，展示进行中的流水线信息，提示加 `--force` 强制执行 |

@@ -28,18 +28,17 @@
 前三项已预填，**只需补填 Cookie**：
 
 ```bash
-# 以下三项已由 init.sh 预填，无需修改
+# 以下三项已由 init.sh 预填，无需修改（pipeline 指令使用）
 AGILEFLOW_CLIENT_ID=97322054661
 AGILEFLOW_CLIENT_SECRET=d8853ef964dc47308c12de10d48b7819
 AGILEFLOW_PERM_CODE=ee_platform
-AGILEFLOW_COOKIE=   # ← 唯一需要手动填写的项，从浏览器登录后复制
+AGILEFLOW_COOKIE=   # ← deploy 指令使用，从浏览器登录后复制
 ```
 
 ## 安全机制
 
 - **发布前检查**：自动检测是否有正在进行中的发布流水线，有则阻止，避免重复发布
 - **加 `--force`**：跳过进行中检查，强制发布
-- **鉴权降级**：优先 Access-Token，返回 -401 时自动降级为 Cookie 鉴权
 - **声明式构建保护**：检测到 `declarative_mode=1` 时自动停止，引导至页面操作
 
 ## 详细文档

@@ -61,8 +61,8 @@ Claude Code 的自定义指令寻址规则：
 `/devops:deploy` 和 `/devops:pipeline` 对接 Bilibili EP Agileflow 平台，凭证存放于 `~/.claude/agileflow.env`（由 `init.sh` 自动创建，权限 600，不进 git）：
 
 ```bash
-AGILEFLOW_CLIENT_ID=97322054661
+AGILEFLOW_CLIENT_ID=97322054661       # pipeline 使用（Access-Token 鉴权）
 AGILEFLOW_CLIENT_SECRET=d8853ef964dc47308c12de10d48b7819
 AGILEFLOW_PERM_CODE=ee_platform
-AGILEFLOW_COOKIE=   # 从浏览器登录后复制，buildAndDeploy 降级鉴权时使用
+AGILEFLOW_COOKIE=                     # deploy 使用，从浏览器登录后复制
 ```
