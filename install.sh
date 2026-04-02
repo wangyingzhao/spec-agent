@@ -49,6 +49,9 @@ echo "复制 SDD 脚本到 $SCRIPTS_DEST ..."
 cp "$SDD_SKILLS_DIR/scripts/sdd-timing.py" "$SCRIPTS_DEST/sdd-timing.py"
 chmod +x "$SCRIPTS_DEST/sdd-timing.py"
 echo "  Done: sdd-timing.py"
+cp "$SDD_SKILLS_DIR/scripts/notify-wecom.sh" "$SCRIPTS_DEST/notify-wecom.sh"
+chmod +x "$SCRIPTS_DEST/notify-wecom.sh"
+echo "  Done: notify-wecom.sh"
 
 # 2. 同步规范文档
 STANDARDS_SRC="$SCRIPT_DIR/docs/standard"
