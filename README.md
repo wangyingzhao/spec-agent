@@ -122,6 +122,28 @@ platform-agent-skills/
 
 ---
 
+## 配置文件
+
+### `~/.claude/platform-sdd.setting.json`
+
+由 `sdd-init` 自动创建（权限 600），用于配置 SDD 流程的通知等扩展功能。
+
+```json
+{
+  "wecom_webhook": ""
+}
+```
+
+| 字段 | 说明 |
+|------|------|
+| `wecom_webhook` | 企业微信群机器人 Webhook 地址。配置后 `/sdd:implement` 完成时会自动发送通知；留空则静默跳过 |
+
+### `~/.claude/agileflow.env`
+
+由 `sdd-init` 自动创建（权限 600），存放 DevOps 指令所需的 Agileflow 平台凭证，详见 [CLAUDE.md](CLAUDE.md)。
+
+---
+
 ## Changelog
 
 ### 2026-04-02
