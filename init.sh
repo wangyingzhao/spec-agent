@@ -350,6 +350,24 @@ else
     echo "  Skip: ~/.claude/agileflow.env 已存在，不覆盖"
 fi
 
+# Step 9.5: 创建默认 platform-sdd.setting.json（企微通知配置）
+echo ""
+echo "[9.5/10] 配置企微通知 (~/.claude/platform-sdd.setting.json) ..."
+PLATFORM_SETTING="$HOME/.claude/platform-sdd.setting.json"
+if [ ! -f "$PLATFORM_SETTING" ]; then
+    mkdir -p "$HOME/.claude"
+    cat > "$PLATFORM_SETTING" <<'SETTINGEOF'
+{
+  "wecom_webhook": ""
+}
+SETTINGEOF
+    chmod 600 "$PLATFORM_SETTING"
+    echo "  Done: 创建 ~/.claude/platform-sdd.setting.json（企微通知配置，权限 600）"
+    echo "  提示: 填写 wecom_webhook 后，/sdd:implement 完成时将自动发送企微通知"
+else
+    echo "  Skip: ~/.claude/platform-sdd.setting.json 已存在"
+fi
+
 # Step 10: 配置 .claude/settings.json（Codex 工具权限）
 echo ""
 echo "[10/10] 配置 .claude/settings.json（Bash 工具权限）..."

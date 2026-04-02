@@ -119,3 +119,15 @@ platform-agent-skills/
 - [模式：API 功能开发](docs/patterns/pattern-a-api.md)
 - [模式：轻量功能](docs/patterns/pattern-a-lite.md)
 - [模式：重构](docs/patterns/pattern-c-refactoring.md)
+
+---
+
+## Changelog
+
+### 2026-04-02
+
+- `/sdd:plan`、`/sdd:tasks`、`/sdd:implement` 新增「不确定即确认」核心原则 — 遇到歧义必须暂停询问用户，不得自行假设
+- `/sdd:plan` 新增表结构设计二次确认、产品需求理解二次确认规则
+- `/sdd:implement` 完成后自动发送企微通知（通过 `notify-wecom.sh`，未配置 webhook 时静默跳过）
+- `install.sh` 新增 `notify-wecom.sh` 脚本的安装
+- `init.sh` 新增 Step 9.5：自动创建 `~/.claude/platform-sdd.setting.json`（企微通知 webhook 配置）
