@@ -280,3 +280,123 @@ app_id=ops.flow-api.mercury
 /devops:deploy                          # 触发发布（全默认）
 /devops:pipeline status ops.foo.bar    # 查看发布进度
 ```
+
+---
+
+## TAPD 指令（/tapd）
+
+**书虫**（TAPD Agent）— 对接 Bilibili EP TAPD 平台，支持查询和操作需求、缺陷、迭代。
+
+### 前提：配置凭证
+
+`./init.sh` 会自动在 `~/.claude/tapd.env` 中创建凭证文件，API 凭证已预填，**只需补充两项**：
+
+```bash
+# ~/.claude/tapd.env（以下四项已由 init.sh 预填，无需修改）
+TAPD_API_USER=tapd-mcp-for-ee
+TAPD_API_PASSWORD=xxx
+TAPD_API_BASE_URL=https://tapd-api.bilibili.co/tapd
+TAPD_WORKSPACE_ID=32164738          # EP Flow 项目，已预填
+TAPD_USER_NICK=                     # ← 唯一需要手动填写的项，填入你的 TAPD 昵称
+```
+
+> workspace_id 可在 TAPD 项目页面 URL 中找到，如 `https://www.tapd.cn/32164738/...` 中的 `32164738`。
+
+---
+
+### /tapd — 需求/缺陷/迭代管理
+
+```
+/tapd <实体> <动作> [参数] [选项]
+```
+
+**示例：**
+
+```bash
+/tapd story list                          # 查看我的进行中需求（默认）
+/tapd story list --status planning        # 查看规划中需求
+/tapd story list --owner 张三 --limit 30  # 查看指定成员需求
+/tapd story detail 1132164738004842136    # 查看需求详情
+/tapd story create                        # 交互式创建需求
+/tapd story update 123 --status done      # 更新需求状态
+
+/tapd bug list                            # 查看我的缺陷
+/tapd bug list --status open              # 查看未关闭缺陷
+/tapd bug create                          # 创建缺陷
+
+/tapd iter list                           # 查看迭代列表
+/tapd iter detail 789                     # 查看迭代详情及需求
+
+/tapd help                                # 显示帮助
+```
+
+**通用选项：**
+
+| 选项 | 说明 |
+|------|------|
+| `--workspace <id>` | 指定 workspace_id，覆盖配置默认值 |
+| `--limit <n>` | 返回条数，默认 20 |
+| `--status <状态>` | 按状态过滤 |
+| `--owner <昵称>` | 按处理人过滤 |
+| `--iter <id>` | 按迭代过滤 |
+| `--priority High/Middle/Low` | 按优先级过滤 |
+
+---
+
+## TAPD 指令（/tapd）
+
+**书虫**（TAPD Agent）— 对接 Bilibili EP TAPD 平台，支持查询和操作需求、缺陷、迭代。
+
+### 前提：配置凭证
+
+`./init.sh` 会自动在 `~/.claude/tapd.env` 中创建凭证文件，API 凭证已预填，**只需补充两项**：
+
+```bash
+# ~/.claude/tapd.env（以下四项已由 init.sh 预填，无需修改）
+TAPD_API_USER=tapd-mcp-for-ee
+TAPD_API_PASSWORD=xxx
+TAPD_API_BASE_URL=https://tapd-api.bilibili.co/tapd
+TAPD_WORKSPACE_ID=32164738          # EP Flow 项目，已预填
+TAPD_USER_NICK=                     # ← 唯一需要手动填写的项，填入你的 TAPD 昵称
+```
+
+> workspace_id 可在 TAPD 项目页面 URL 中找到，如 `https://www.tapd.cn/32164738/...` 中的 `32164738`。
+
+---
+
+### /tapd — 需求/缺陷/迭代管理
+
+```
+/tapd <实体> <动作> [参数] [选项]
+```
+
+**示例：**
+
+```bash
+/tapd story list                          # 查看我的进行中需求（默认）
+/tapd story list --status planning        # 查看规划中需求
+/tapd story list --owner 张三 --limit 30  # 查看指定成员需求
+/tapd story detail 1132164738004842136    # 查看需求详情
+/tapd story create                        # 交互式创建需求
+/tapd story update 123 --status done      # 更新需求状态
+
+/tapd bug list                            # 查看我的缺陷
+/tapd bug list --status open              # 查看未关闭缺陷
+/tapd bug create                          # 创建缺陷
+
+/tapd iter list                           # 查看迭代列表
+/tapd iter detail 789                     # 查看迭代详情及需求
+
+/tapd help                                # 显示帮助
+```
+
+**通用选项：**
+
+| 选项 | 说明 |
+|------|------|
+| `--workspace <id>` | 指定 workspace_id，覆盖配置默认值 |
+| `--limit <n>` | 返回条数，默认 20 |
+| `--status <状态>` | 按状态过滤 |
+| `--owner <昵称>` | 按处理人过滤 |
+| `--iter <id>` | 按迭代过滤 |
+| `--priority High/Middle/Low` | 按优先级过滤 |

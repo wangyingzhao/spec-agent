@@ -40,6 +40,15 @@ if [ -d "$DEVOPS_SKILLS_DIR/commands" ]; then
     echo "  /devops:deploy"
 fi
 
+# 1.8 复制 TAPD 指令（书虫）→ /tapd
+TAPD_SKILLS_DIR="$SCRIPT_DIR/skills/tapd"
+if [ -d "$TAPD_SKILLS_DIR/commands" ]; then
+    echo ""
+    echo "复制 TAPD 指令到 ~/.claude/commands/ ..."
+    cp "$TAPD_SKILLS_DIR/commands/tapd.md" "$HOME/.claude/commands/tapd.md"
+    echo "  /tapd"
+fi
+
 # 1.5 复制 SDD 脚本
 SCRIPTS_DEST="$HOME/.local/bin/skills/sdd/scripts"
 mkdir -p "$SCRIPTS_DEST"

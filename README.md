@@ -72,6 +72,16 @@ sdd-init
 | `/devops:deploy [appid] [branch] [env]` | 信鸽（Deploy） | 一键构建并发布到 caster 平台 |
 | `/devops:pipeline <子命令>` | 信鸽（Pipeline） | 查询流水线状态、配置、历史记录 |
 
+### /tapd 指令（本仓库提供）
+
+负责**项目管理**，对接 Bilibili EP TAPD 平台。
+
+| 指令 | 角色 | 职责 |
+|------|------|------|
+| `/tapd story <动作>` | 书虫（TAPD） | 查询/创建/更新需求 |
+| `/tapd bug <动作>` | 书虫（TAPD） | 查询/创建/更新缺陷 |
+| `/tapd iter <动作>` | 书虫（TAPD） | 查询迭代及其需求 |
+
 ### spec-kit 原生指令（需单独安装 specify-cli）
 
 负责**需求阶段**：需求 Spec 的生成、完善与审核。
@@ -101,6 +111,8 @@ platform-agent-skills/
 │   │   └── spec-kit-templates/        # spec-kit 模板
 │   └── devops/
 │       └── commands/                  # 2 条 DevOps 指令（deploy / pipeline）
+│   └── tapd/
+│       └── commands/                  # 1 条 TAPD 指令（tapd）
 └── docs/
     ├── QUICKSTART.md
     ├── CLAUDE-md-template.md
@@ -115,6 +127,7 @@ platform-agent-skills/
 - [快速入门](docs/QUICKSTART.md)
 - [SDD 技能包说明](skills/sdd/README.md)
 - [DevOps 技能包说明](skills/devops/README.md)
+- [TAPD 技能包说明](skills/tapd/README.md)
 - [CLAUDE.md 模板](docs/CLAUDE-md-template.md)
 - [模式：API 功能开发](docs/patterns/pattern-a-api.md)
 - [模式：轻量功能](docs/patterns/pattern-a-lite.md)

@@ -330,7 +330,7 @@ _setup_tapd "$PROJECT_DIR"
 
 # Step 9: 写入 Agileflow 凭证到 ~/.claude/agileflow.env
 echo ""
-echo "[9/9] 配置 Agileflow 凭证 (~/.claude/agileflow.env) ..."
+echo "[9/11] 配置 Agileflow 凭证 (~/.claude/agileflow.env) ..."
 AGILEFLOW_ENV="$HOME/.claude/agileflow.env"
 if [ ! -f "$AGILEFLOW_ENV" ]; then
     mkdir -p "$HOME/.claude"
@@ -368,9 +368,31 @@ else
     echo "  Skip: ~/.claude/platform-sdd.setting.json 已存在"
 fi
 
-# Step 10: 配置 .claude/settings.json（Codex 工具权限）
+# Step 10: 写入 TAPD 凭证到 ~/.claude/tapd.env
 echo ""
-echo "[10/10] 配置 .claude/settings.json（Bash 工具权限）..."
+echo "[10/11] 配置 TAPD 凭证 (~/.claude/tapd.env) ..."
+TAPD_ENV="$HOME/.claude/tapd.env"
+if [ ! -f "$TAPD_ENV" ]; then
+    mkdir -p "$HOME/.claude"
+    cat > "$TAPD_ENV" <<'ENVEOF'
+# TAPD API 凭证
+# 由 platform-agent-skills init.sh 自动生成，勿提交到 git
+TAPD_API_USER=tapd-mcp-for-ee
+TAPD_API_PASSWORD=$apr1$0jXDMe9BSaU=$nMxPgbbnnFzDMUl8fcinig==
+TAPD_API_BASE_URL=https://tapd-api.bilibili.co/tapd
+TAPD_WORKSPACE_ID=32164738   # EP Flow 项目 workspace_id
+TAPD_USER_NICK=              # ← 填入你的 TAPD 昵称，用于过滤"我的需求"
+ENVEOF
+    chmod 600 "$TAPD_ENV"
+    echo "  Done: 创建 ~/.claude/tapd.env（权限 600）"
+    echo "  ⚠️  请补充填写 TAPD_USER_NICK"
+else
+    echo "  Skip: ~/.claude/tapd.env 已存在，不覆盖"
+fi
+
+# Step 11: 配置 .claude/settings.json（Codex 工具权限）
+echo ""
+echo "[11/11] 配置 .claude/settings.json（Bash 工具权限）..."
 CLAUDE_SETTINGS="$PROJECT_DIR/.claude/settings.json"
 mkdir -p "$PROJECT_DIR/.claude"
 
