@@ -1,6 +1,6 @@
 # DevOps 技能包
 
-**信鸽**（DevOps Agent）— 负责 CI/CD 流水线与应用发布，对接 Bilibili EP Agileflow 平台。
+**信鸽**（DevOps Agent）— 负责 CI/CD 流水线与应用发布，对接 Internal Agileflow 平台。
 
 ## 指令
 
@@ -29,9 +29,9 @@
 
 ```bash
 # 以下三项已由 init.sh 预填，无需修改（pipeline 指令使用）
-AGILEFLOW_CLIENT_ID=97322054661
-AGILEFLOW_CLIENT_SECRET=d8853ef964dc47308c12de10d48b7819
-AGILEFLOW_PERM_CODE=ee_platform
+AGILEFLOW_CLIENT_ID=<your-client-id>
+AGILEFLOW_CLIENT_SECRET=<your-client-secret>
+AGILEFLOW_PERM_CODE=<your-perm-code>
 AGILEFLOW_COOKIE=   # ← deploy 指令使用，从浏览器登录后复制
 ```
 

@@ -7,7 +7,7 @@
 ### Step 1：全局安装（一次，所有项目生效）
 
 ```bash
-git clone git@git.bilibili.co:efficiency-ai/platform-agent-skills.git
+git clone git@git.example.com:your-org/spec-agent.git
 cd platform-agent-skills
 ./install.sh
 ```
@@ -65,7 +65,7 @@ sdd-init
 
 ### /devops:* 指令（本仓库提供）
 
-负责 **CI/CD 流水线与发布**，对接 Bilibili EP Agileflow 平台。
+负责 **CI/CD 流水线与发布**，对接 Internal Agileflow 平台。
 
 | 指令 | 角色 | 职责 |
 |------|------|------|
@@ -74,7 +74,7 @@ sdd-init
 
 ### /tapd 指令（本仓库提供）
 
-负责**项目管理**，对接 Bilibili EP TAPD 平台。
+负责**项目管理**，对接 Internal TAPD 平台。
 
 | 指令 | 角色 | 职责 |
 |------|------|------|

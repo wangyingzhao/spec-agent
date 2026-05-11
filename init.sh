@@ -87,9 +87,9 @@ cfg["mcpServers"]["mcp-server-tapd"] = {
     "command": "uvx",
     "args": [
         "mcp-server-tapd",
-        "--api-user=tapd-mcp-for-ee",
-        "--api-password=$apr1$0jXDMe9BSaU=$nMxPgbbnnFzDMUl8fcinig==",
-        "--api-base-url=https://tapd-api.bilibili.co/tapd",
+        "--api-user=<your-tapd-user>",
+        "--api-password=<your-tapd-password>",
+        "--api-base-url=https://tapd-api.example.com/tapd",
         "--tapd-base-url=https://www.tapd.cn"
     ]
 }
@@ -109,9 +109,9 @@ PYEOF
       "command": "uvx",
       "args": [
         "mcp-server-tapd",
-        "--api-user=tapd-mcp-for-ee",
-        "--api-password=$apr1$0jXDMe9BSaU=$nMxPgbbnnFzDMUl8fcinig==",
-        "--api-base-url=https://tapd-api.bilibili.co/tapd",
+        "--api-user=<your-tapd-user>",
+        "--api-password=<your-tapd-password>",
+        "--api-base-url=https://tapd-api.example.com/tapd",
         "--tapd-base-url=https://www.tapd.cn"
       ]
     }
@@ -337,11 +337,11 @@ if [ ! -f "$AGILEFLOW_ENV" ]; then
     cat > "$AGILEFLOW_ENV" <<'ENVEOF'
 # Agileflow Open API 凭证
 # 由 platform-agent-skills init.sh 自动生成，勿提交到 git
-AGILEFLOW_CLIENT_ID=97322054661
-AGILEFLOW_CLIENT_SECRET=d8853ef964dc47308c12de10d48b7819
-AGILEFLOW_PERM_CODE=ee_platform
+AGILEFLOW_CLIENT_ID=<your-client-id>
+AGILEFLOW_CLIENT_SECRET=<your-client-secret>
+AGILEFLOW_PERM_CODE=<your-perm-code>
 # Cookie 鉴权（fast-deploy 使用，Access-Token 不支持时自动降级）
-# 从浏览器登录 agileflow.bilibili.co 后复制 Cookie 填入
+# 从浏览器登录 agileflow.example.com 后复制 Cookie 填入
 AGILEFLOW_COOKIE=
 ENVEOF
     chmod 600 "$AGILEFLOW_ENV"
@@ -377,9 +377,9 @@ if [ ! -f "$TAPD_ENV" ]; then
     cat > "$TAPD_ENV" <<'ENVEOF'
 # TAPD API 凭证
 # 由 platform-agent-skills init.sh 自动生成，勿提交到 git
-TAPD_API_USER=tapd-mcp-for-ee
-TAPD_API_PASSWORD=$apr1$0jXDMe9BSaU=$nMxPgbbnnFzDMUl8fcinig==
-TAPD_API_BASE_URL=https://tapd-api.bilibili.co/tapd
+TAPD_API_USER=<your-tapd-user>
+TAPD_API_PASSWORD=<your-tapd-password>
+TAPD_API_BASE_URL=https://tapd-api.example.com/tapd
 TAPD_WORKSPACE_ID=32164738   # EP Flow 项目 workspace_id
 TAPD_USER_NICK=              # ← 填入你的 TAPD 昵称，用于过滤"我的需求"
 ENVEOF

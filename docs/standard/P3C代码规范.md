@@ -42,7 +42,7 @@
 
 #### 问题 1.1: DrawWebSocketHandler.java:88
 ```java
-File: lottery-screen/src/main/java/com/bilibili/lottery/screen/websocket/DrawWebSocketHandler.java
+File: lottery-screen/src/main/java/com/example/lottery/screen/websocket/DrawWebSocketHandler.java
 Line: 88
 
 ❌ 当前代码:
@@ -62,7 +62,7 @@ Line: 88
 
 #### 问题 1.2: EmployeeSyncJobHandler.java:36
 ```java
-File: lottery-job/src/main/java/com/bilibili/lottery/job/handler/EmployeeSyncJobHandler.java
+File: lottery-job/src/main/java/com/example/lottery/job/handler/EmployeeSyncJobHandler.java
 Line: 36
 
 ❌ 当前代码:
@@ -106,11 +106,11 @@ Line: 36
 
 ```java
 Files:
-- lottery-common/lottery-common-core/src/main/java/com/bilibili/lottery/common/core/enums/EmployeeType.java:33, 40
-- lottery-common/lottery-common-core/src/main/java/com/bilibili/lottery/common/core/enums/EventStatus.java:38, 45
-- lottery-common/lottery-common-core/src/main/java/com/bilibili/lottery/common/core/enums/PrizeStatus.java:43, 50
-- lottery-common/lottery-common-core/src/main/java/com/bilibili/lottery/common/core/enums/DrawMethod.java:38, 45
-- lottery-common/lottery-common-core/src/main/java/com/bilibili/lottery/common/core/enums/PrizeType.java:33, 40
+- lottery-common/lottery-common-core/src/main/java/com/example/lottery/common/core/enums/EmployeeType.java:33, 40
+- lottery-common/lottery-common-core/src/main/java/com/example/lottery/common/core/enums/EventStatus.java:38, 45
+- lottery-common/lottery-common-core/src/main/java/com/example/lottery/common/core/enums/PrizeStatus.java:43, 50
+- lottery-common/lottery-common-core/src/main/java/com/example/lottery/common/core/enums/DrawMethod.java:38, 45
+- lottery-common/lottery-common-core/src/main/java/com/example/lottery/common/core/enums/PrizeType.java:33, 40
 
 ❌ 当前代码 (以PrizeType为例):
 public static PrizeType of(Integer code) {
@@ -190,7 +190,7 @@ public static PrizeType ofNullable(Integer code) {
 **问题位置**:
 
 ```java
-File: lottery-job/src/main/java/com/bilibili/lottery/job/handler/EmployeeSyncJobHandler.java
+File: lottery-job/src/main/java/com/example/lottery/job/handler/EmployeeSyncJobHandler.java
 Line: 38
 
 ❌ 当前代码:
@@ -224,7 +224,7 @@ XxlJobHelper.handleFail("员工数据同步失败: " + e.getMessage());  // 单�
 - ✅ 未发现`System.out.println()`调试输出
 - ✅ 所有异常都通过日志框架记录
 
-**示例** (lottery-core/lottery-core-engine/src/main/java/com/bilibili/lottery/core/engine/algorithm/impl/WeightedDrawAlgorithm.java):
+**示例** (lottery-core/lottery-core-engine/src/main/java/com/example/lottery/core/engine/algorithm/impl/WeightedDrawAlgorithm.java):
 ```java
 // ✅ 使用BusinessException抛出业务异常
 if (CollUtil.isEmpty(candidates)) {
@@ -244,7 +244,7 @@ if (count <= 0) {
 - ✅ 方法名: camelCase (如 `getBettingInfo`, `submitBetting`, `executeDraw`)
 - ✅ 变量名: camelCase (如 `prizeId`, `employeeId`, `totalWeight`)
 - ✅ 常量: UPPER_SNAKE_CASE (如 `RANDOM` in WeightedDrawAlgorithm)
-- ✅ 包名: 全小写 (如 `com.bilibili.lottery.core.engine`)
+- ✅ 包名: 全小写 (如 `com.example.lottery.core.engine`)
 
 **示例**:
 ```java
@@ -270,7 +270,7 @@ public class EmployeeSyncJobHandler {
 - ✅ 日志级别使用合理 (info/debug/error)
 - ✅ Logger声明规范 (通过@Slf4j自动生成`private static final Logger log`)
 
-**示例** (lottery-core/lottery-core-engine/src/main/java/com/bilibili/lottery/core/engine/strategy/impl/RandomDrawStrategy.java):
+**示例** (lottery-core/lottery-core-engine/src/main/java/com/example/lottery/core/engine/strategy/impl/RandomDrawStrategy.java):
 ```java
 // ✅ 使用占位符，避免字符串拼接
 log.info("开始执行随机抽选, 奖项ID: {}, 奖项名称: {}, 获奖人数: {}",
@@ -292,7 +292,7 @@ log.info("随机抽选完成, 中奖人数: {}", winners.size());
 - ✅ 字段声明在类的开头
 - ✅ 使用Lombok简化代码 (`@RequiredArgsConstructor`, `@Data`, `@Slf4j`)
 
-**示例** (lottery-admin/src/main/java/com/bilibili/lottery/admin/controller/PrizeController.java):
+**示例** (lottery-admin/src/main/java/com/example/lottery/admin/controller/PrizeController.java):
 ```java
 // ✅ 控制器方法简洁清晰
 @PostMapping
@@ -312,13 +312,13 @@ public Result<Long> createPrize(@RequestBody @Validated LotteryPrize prize) {
 - ✅ 使用`ConcurrentHashMap`管理WebSocket会话 (线程安全)
 - ✅ 未发现`SimpleDateFormat`线程安全问题 (项目中未使用)
 
-**示例** (lottery-core/lottery-core-engine/src/main/java/com/bilibili/lottery/core/engine/algorithm/impl/WeightedDrawAlgorithm.java):
+**示例** (lottery-core/lottery-core-engine/src/main/java/com/example/lottery/core/engine/algorithm/impl/WeightedDrawAlgorithm.java):
 ```java
 // ✅ 使用SecureRandom，更安全
 private static final SecureRandom RANDOM = new SecureRandom();
 ```
 
-**示例** (lottery-screen/src/main/java/com/bilibili/lottery/screen/websocket/DrawWebSocketHandler.java):
+**示例** (lottery-screen/src/main/java/com/example/lottery/screen/websocket/DrawWebSocketHandler.java):
 ```java
 // ✅ 使用ConcurrentHashMap，线程安全
 private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
@@ -334,7 +334,7 @@ private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>()
 - ✅ 使用统一响应包装类 `Result<T>`
 - ✅ 使用校验注解 `@Validated`, `@NotNull`
 
-**示例** (lottery-common/lottery-common-core/src/main/java/com/bilibili/lottery/common/core/result/Result.java):
+**示例** (lottery-common/lottery-common-core/src/main/java/com/example/lottery/common/core/result/Result.java):
 ```java
 // ✅ 设计良好的响应包装类
 @Data

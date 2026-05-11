@@ -14,7 +14,7 @@
 ### Step 1：克隆技能包
 
 ```bash
-git clone git@git.bilibili.co:efficiency-ai/platform-agent-skills.git ~/platform-agent-skills
+git clone git@git.example.com:your-org/spec-agent.git ~/platform-agent-skills
 ```
 
 ### Step 2：全局安装 SDD 指令
@@ -204,7 +204,7 @@ A: `standards/` 是从本仓库同步的原始规范文件（接口规范、DB �
 
 ## DevOps 指令（/devops:*）
 
-`/devops:*` 指令由 **信鸽** 驱动，对接 Bilibili EP Agileflow 平台，负责触发构建发布和查询流水线状态。
+`/devops:*` 指令由 **信鸽** 驱动，对接 Internal Agileflow 平台，负责触发构建发布和查询流水线状态。
 
 ### 前提：配置凭证
 
@@ -212,13 +212,13 @@ A: `standards/` 是从本仓库同步的原始规范文件（接口规范、DB �
 
 ```bash
 # ~/.claude/agileflow.env（以下三项已由 init.sh 预填，无需修改）
-AGILEFLOW_CLIENT_ID=97322054661        # /devops:pipeline 使用（Access-Token 鉴权）
-AGILEFLOW_CLIENT_SECRET=d8853ef964dc47308c12de10d48b7819
-AGILEFLOW_PERM_CODE=ee_platform
+AGILEFLOW_CLIENT_ID=<your-client-id>        # /devops:pipeline 使用（Access-Token 鉴权）
+AGILEFLOW_CLIENT_SECRET=<your-client-secret>
+AGILEFLOW_PERM_CODE=<your-perm-code>
 AGILEFLOW_COOKIE=                      # /devops:deploy 使用，← 唯一需要手动填写的项
 ```
 
-> 在浏览器登录 agileflow.bilibili.co → 打开 DevTools → Network → 复制任意请求的 `Cookie` 请求头值填入。
+> 在浏览器登录 agileflow.example.com → 打开 DevTools → Network → 复制任意请求的 `Cookie` 请求头值填入。
 
 ---
 
@@ -285,7 +285,7 @@ app_id=ops.flow-api.mercury
 
 ## TAPD 指令（/tapd）
 
-**书虫**（TAPD Agent）— 对接 Bilibili EP TAPD 平台，支持查询和操作需求、缺陷、迭代。
+**书虫**（TAPD Agent）— 对接 Internal TAPD 平台，支持查询和操作需求、缺陷、迭代。
 
 ### 前提：配置凭证
 
@@ -293,9 +293,9 @@ app_id=ops.flow-api.mercury
 
 ```bash
 # ~/.claude/tapd.env（以下四项已由 init.sh 预填，无需修改）
-TAPD_API_USER=tapd-mcp-for-ee
+TAPD_API_USER=<your-tapd-user>
 TAPD_API_PASSWORD=xxx
-TAPD_API_BASE_URL=https://tapd-api.bilibili.co/tapd
+TAPD_API_BASE_URL=https://tapd-api.example.com/tapd
 TAPD_WORKSPACE_ID=32164738          # EP Flow 项目，已预填
 TAPD_USER_NICK=                     # ← 唯一需要手动填写的项，填入你的 TAPD 昵称
 ```
@@ -345,7 +345,7 @@ TAPD_USER_NICK=                     # ← 唯一需要手动填写的项，填�
 
 ## TAPD 指令（/tapd）
 
-**书虫**（TAPD Agent）— 对接 Bilibili EP TAPD 平台，支持查询和操作需求、缺陷、迭代。
+**书虫**（TAPD Agent）— 对接 Internal TAPD 平台，支持查询和操作需求、缺陷、迭代。
 
 ### 前提：配置凭证
 
@@ -353,9 +353,9 @@ TAPD_USER_NICK=                     # ← 唯一需要手动填写的项，填�
 
 ```bash
 # ~/.claude/tapd.env（以下四项已由 init.sh 预填，无需修改）
-TAPD_API_USER=tapd-mcp-for-ee
+TAPD_API_USER=<your-tapd-user>
 TAPD_API_PASSWORD=xxx
-TAPD_API_BASE_URL=https://tapd-api.bilibili.co/tapd
+TAPD_API_BASE_URL=https://tapd-api.example.com/tapd
 TAPD_WORKSPACE_ID=32164738          # EP Flow 项目，已预填
 TAPD_USER_NICK=                     # ← 唯一需要手动填写的项，填入你的 TAPD 昵称
 ```

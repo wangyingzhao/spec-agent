@@ -58,35 +58,35 @@ Claude Code 的自定义指令寻址规则：
 
 ## DevOps 指令（信鸽）
 
-`/devops:deploy` 和 `/devops:pipeline` 对接 Bilibili EP Agileflow 平台，凭证存放于 `~/.claude/agileflow.env`（由 `init.sh` 自动创建，权限 600，不进 git）：
+`/devops:deploy` 和 `/devops:pipeline` 对接 Internal Agileflow 平台，凭证存放于 `~/.claude/agileflow.env`（由 `init.sh` 自动创建，权限 600，不进 git）：
 
 ```bash
-AGILEFLOW_CLIENT_ID=97322054661       # pipeline 使用（Access-Token 鉴权）
-AGILEFLOW_CLIENT_SECRET=d8853ef964dc47308c12de10d48b7819
-AGILEFLOW_PERM_CODE=ee_platform
+AGILEFLOW_CLIENT_ID=<your-client-id>       # pipeline 使用（Access-Token 鉴权）
+AGILEFLOW_CLIENT_SECRET=<your-client-secret>
+AGILEFLOW_PERM_CODE=<your-perm-code>
 AGILEFLOW_COOKIE=                     # deploy 使用，从浏览器登录后复制
 ```
 
 ## TAPD 指令（书虫）
 
-`/tapd` 对接 Bilibili EP TAPD 平台，凭证存放于 `~/.claude/tapd.env`（由 `init.sh` 自动创建，权限 600，不进 git）：
+`/tapd` 对接 Internal TAPD 平台，凭证存放于 `~/.claude/tapd.env`（由 `init.sh` 自动创建，权限 600，不进 git）：
 
 ```bash
-TAPD_API_USER=tapd-mcp-for-ee         # 已预填
+TAPD_API_USER=<your-tapd-user>         # 已预填
 TAPD_API_PASSWORD=xxx                 # 已预填
-TAPD_API_BASE_URL=https://tapd-api.bilibili.co/tapd  # 已预填
+TAPD_API_BASE_URL=https://tapd-api.example.com/tapd  # 已预填
 TAPD_WORKSPACE_ID=                    # ← 填入项目 workspace_id
 TAPD_USER_NICK=                       # ← 填入 TAPD 昵称
 ```
 
 ## TAPD 指令（书虫）
 
-`/tapd` 对接 Bilibili EP TAPD 平台，凭证存放于 `~/.claude/tapd.env`（由 `init.sh` 自动创建，权限 600，不进 git）：
+`/tapd` 对接 Internal TAPD 平台，凭证存放于 `~/.claude/tapd.env`（由 `init.sh` 自动创建，权限 600，不进 git）：
 
 ```bash
-TAPD_API_USER=tapd-mcp-for-ee         # 已预填
+TAPD_API_USER=<your-tapd-user>         # 已预填
 TAPD_API_PASSWORD=xxx                 # 已预填
-TAPD_API_BASE_URL=https://tapd-api.bilibili.co/tapd  # 已预填
+TAPD_API_BASE_URL=https://tapd-api.example.com/tapd  # 已预填
 TAPD_WORKSPACE_ID=                    # ← 填入项目 workspace_id
 TAPD_USER_NICK=                       # ← 填入 TAPD 昵称
 ```

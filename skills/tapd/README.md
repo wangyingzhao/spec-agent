@@ -1,6 +1,6 @@
 # TAPD 技能包
 
-**书虫**（TAPD Agent）— 负责项目管理，对接 Bilibili EP TAPD 平台，支持查询和操作需求、缺陷、迭代。
+**书虫**（TAPD Agent）— 负责项目管理，对接 Internal TAPD 平台，支持查询和操作需求、缺陷、迭代。
 
 ## 指令
 
@@ -32,9 +32,9 @@
 凭证由 `./init.sh` 自动写入 `~/.claude/tapd.env`（权限 600，不进 git）：
 
 ```bash
-TAPD_API_USER=tapd-mcp-for-ee
+TAPD_API_USER=<your-tapd-user>
 TAPD_API_PASSWORD=xxx               # 已由 init.sh 预填
-TAPD_API_BASE_URL=https://tapd-api.bilibili.co/tapd
+TAPD_API_BASE_URL=https://tapd-api.example.com/tapd
 TAPD_WORKSPACE_ID=32164738          # 已预填（EP Flow 项目）
 TAPD_USER_NICK=                     # ← 填入你的 TAPD 昵称（用于过滤我的需求）
 ```
